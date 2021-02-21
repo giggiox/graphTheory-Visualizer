@@ -68,9 +68,5 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
     
   },
-  "include": ["src"],
-  "dependencies": {
-    "@types/p5": "0.9.0",
-    "p5": "0.9.0"
-  }
+  "include": ["src"]
 }
