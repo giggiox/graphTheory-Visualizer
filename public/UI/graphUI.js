@@ -73,7 +73,10 @@ class GraphUI {
         this.#renderEdges();
         this.#renderVertices();
         this.#renderKruskal();
-        text(this.graph.toString(), windowWidth-300, windowHeight-300);
+
+        //TODO volatile window with different representations
+        textSize(13);
+        text(this.graph.toString(), width-200, height-200);
     }
 
     #renderVertices(){

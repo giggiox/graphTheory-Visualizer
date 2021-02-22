@@ -9,29 +9,38 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-dark bg-dark navbar-expand-md">
-            <a class="navbar-brand" href="#">giggiox github</a>
-            <div class="container">
-                <button class="navbar-toggler d-none" data-toggle="collapse" data-target="#navcol-1"><span
-                        class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navcol-1">
-                    <ul class="nav navbar-nav w-100 justify-content-between">
-                        <li class="nav-item dropdown">
-                            <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">algorithm</a>
-                            <div class="dropdown-menu" role="menu">
-                                <a class="dropdown-item algorithms" role="presentation" id="BFS" href="#">breadth-first search</a>
-                                <a class="dropdown-item algorithms" role="presentation" id="DFS" href="#">depth-first search</a>
-                                <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted!</b>" href="#">kruskal MST</a>
-                            </div>
-                        </li>
-                        <div class="mx-auto">
-                            <a class="btn btn-danger" id="visualize-button" href="#">visualize breadth-first search</a>
-                        </div>
-                    </ul>
+        
 
-                </div>
+        
+
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark main-nav">
+            
+            <div class="container justify-content-center">
+                <ul class="nav navbar-nav w-100 justify-content-between">
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">algorithm</a>
+                        <div class="dropdown-menu" role="menu">
+                            <a class="dropdown-item algorithms" role="presentation" id="BFS" href="#">breadth-first search</a>
+                            <a class="dropdown-item algorithms" role="presentation" id="DFS" href="#">depth-first search</a>
+                            <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted!</b>" href="#">kruskal MST</a>
+                        </div>
+                    </li>
+                </ul>
+                
+                <ul class="nav navbar-nav justify-content-center" id="visualize">
+                    <button class="btn btn-danger" id="visualize-button" href="#">visualize breadth-first search</button>
+                </ul>
+                <ul class="nav navbar-nav w-100 justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Help</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
             </div>
         </nav>
+        
 
         
 

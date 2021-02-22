@@ -102,3 +102,7 @@
   .slider.round:before {
     border-radius: 50%;
   }
+
+  #visualize{
+    width: 100%;
+  }
