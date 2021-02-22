@@ -1,7 +1,7 @@
 class VertexUI {
     constructor(label, x = null, y = null) {
-        this.x = x == null ? random(width) : x;
-        this.y = y == null ? random(height) : x;
+        this.x = x == null ? random(width-20) : x;
+        this.y = y == null ? random(height-20) : x;
         this.label = label;
 
         this.flags = {

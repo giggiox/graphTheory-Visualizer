@@ -1,60 +1,18 @@
 var graphUI=new GraphUI();
+
 function setup() {
-    createCanvas(windowWidth, windowHeight);
-
+    var width=$('#canvas').width();
+    var height=$('#canvas').height();
+    let cnv=createCanvas(width, height);
+    cnv.parent('canvas');
     graphUI.initRandomGraph();
-    
-    button = createButton("add vertex");
-    button.position(10, 20);
-    button.mousePressed(addVertex);
 
-    button = createButton("add edge");
-    button.position(10, 50);
-    button.mousePressed(addEdge);
-
-    check = createCheckbox("weighted TODO");
-    check.position(10,80);
-    check.mousePressed(weightedGraph);
-
-    button = createButton("breadth-first search");
-    button.position(10, 100);
-    button.mousePressed(BFS);
-
-    button = createButton("depth-first search");
-    button.position(10, 120);
-    button.mousePressed(DFS);
-
-    button = createButton("kruskal");
-    button.position(10, 140);
-    button.mousePressed(kruskal);
-
-}
-
-function weightedGraph(){
-    graphUI.setWeighted();
-}
-
-function BFS(){
-    graphUI.performBFS();
-}
-
-function DFS(){
-    graphUI.performDFS();
-}
-
-function kruskal(){
-    graphUI.performKrskal();
-}
-
-function addVertex(){
-    graphUI.addVertex();
-}
-function addEdge(){
-    graphUI.addEdge();
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
+    var width=$('#canvas').width();
+    var height=$('#canvas').height();
+    resizeCanvas(width, height);
 }
 
 function draw() {
@@ -71,3 +29,49 @@ function mouseDragged(){
 function mouseReleased(){
     graphUI.mouseReleased();
 }
+
+$(function(){
+    $('#visualize-button').data('perform_id',"BFS");
+});
+$('#KRUSKAL').hover(function(){
+    if(!$('#graph-weighted-checkbox').prop('checked')){
+        $('#KRUSKAL').tooltip('enable');
+    }else{
+        $('#KRUSKAL').tooltip('disable');
+    }
+})
+$('.algorithms').click(function(){
+    if(($(this).attr('id') == "KRUSKAL") && !$('#graph-weighted-checkbox').prop('checked')){
+            return;
+    }
+    $('#visualize-button').text("visualize " + $(this).text());
+    $('#visualize-button').data('perform_id',$(this).attr('id'));
+});
+
+$('#graph-weighted-checkbox').click(function(){
+    graphUI.setWeighted();
+})
+$('#visualize-button').click(function(){
+    let perform_id=$('#visualize-button').data('perform_id');
+    switch(perform_id){
+        case "BFS":
+            graphUI.performBFS();
+            break;
+        case "DFS":
+            graphUI.performDFS();
+            break;
+        case "KRUSKAL":
+            graphUI.performKrskal();
+            break;
+        default:
+            console.log("no action to perform");
+    }
+});
+
+$('#btn-add-vertex').click(function(){
+    graphUI.addVertex();
+})
+
+$('#btn-add-edge').click(function(){
+    graphUI.addEdge();
+})
