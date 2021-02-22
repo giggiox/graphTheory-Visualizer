@@ -74,11 +74,15 @@ $('#btn-add-vertex').click(function(){
 })
 
 $('#btn-add-edge').click(function(){
-    $('#first-vertex-select-tip').show();
-    graphUI.addEdge();
-    setTimeout(function() { 
-        $('#first-vertex-select-tip').hide(); 
-    }, 2500);
+    
+    let added=graphUI.addEdge();
+    if(added){
+        $('#first-vertex-select-tip').show();
+        setTimeout(function() { 
+            $('#first-vertex-select-tip').fadeOut(); 
+        }, 2500);
+    }
+    
    
 })
 

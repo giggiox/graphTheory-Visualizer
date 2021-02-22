@@ -49,6 +49,9 @@ class GraphUI {
         this.graph.addVertex(u);
     }
 
+    /*
+    * returns true if edge is added, false otherwise
+    */
     addEdge() {
         /* switch true and false if button is clicked more two+ times */
         this.addingEdgeMode.enabled = !this.addingEdgeMode.enabled;
@@ -63,6 +66,7 @@ class GraphUI {
             });
             this.addingEdgeMode.vertices=[];
         }
+        return this.addingEdgeMode.enabled;
     }
 
     render() {

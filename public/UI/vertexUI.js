@@ -1,7 +1,7 @@
 class VertexUI {
     constructor(label, x = null, y = null) {
-        this.x = x == null ? random(width-20) : x;
-        this.y = y == null ? random(height-20) : x;
+        this.x = x == null ? random(30,width-30) : x; /* height and width are variables set by createCanvas automatically by p5 */
+        this.y = y == null ? random(30,height-30) : x;
         this.label = label;
 
         this.flags = {
@@ -56,13 +56,14 @@ class VertexUI {
     blink(){
         let t=0;
         let ref=this;
-        let repetitions=5;
+        let repetitions=4;
+        ref.flags.invalid=!ref.flags.invalid;
         let intervalID=window.setInterval(function(){
             if(t==repetitions){
                 window.clearInterval(intervalID);
             }
             ref.flags.invalid=!ref.flags.invalid;
             t++;
-        },500,repetitions);
+        },400,repetitions);
     }
 }
