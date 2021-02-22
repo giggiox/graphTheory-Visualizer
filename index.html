@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" href="./public/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -36,8 +37,8 @@
         </nav>
 
         <div class="col-sm-6 text-center top10 bottom10">
-            <button id="btn-add-vertex" class="btn btn-primary btn-md center-block" Style="width: 100px;">button</button>
-            <button id="btn-add-edge" class="btn btn-danger btn-md center-block" Style="width: 100px;">button</button>
+            <button id="btn-add-vertex" class="btn btn-primary btn-md center-block" Style="width: 100px;"><i class="fa fa-plus"></i> vertex</button>
+            <button id="btn-add-edge" class="btn btn-danger btn-md center-block" Style="width: 100px;"><i class="fa fa-plus"></i> edge</button>
             <label class="form-check-label" for="graph-weighted-checkbox">
                 <b>weighted</b>
             </label>
@@ -46,7 +47,8 @@
 
         <div id="canvas">
             <div id="first-vertex-select-tip" class="top10 left10">
-                select first vertex
+                1-select first vertex<br>
+                2-select <b>valid</b> second vertex
             </div>
         </div>
 

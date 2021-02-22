@@ -32,6 +32,7 @@ function mouseReleased(){
 
 $(function(){
     $('#visualize-button').data('perform_id',"BFS");
+    $('#first-vertex-select-tip').hide();
 });
 $('#KRUSKAL').hover(function(){
     if(!$('#graph-weighted-checkbox').prop('checked')){
@@ -73,5 +74,10 @@ $('#btn-add-vertex').click(function(){
 })
 
 $('#btn-add-edge').click(function(){
+    $('#first-vertex-select-tip').show();
     graphUI.addEdge();
+    setTimeout(function() { 
+        $('#first-vertex-select-tip').hide(); 
+    }, 2500);
+   
 })

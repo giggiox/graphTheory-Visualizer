@@ -7,7 +7,8 @@ class VertexUI {
         this.flags = {
             hover: false,
             dragging: false,
-            clicked: false
+            clicked: false,
+            invalid:false
         };
 
         this.radius = 25;
@@ -39,13 +40,29 @@ class VertexUI {
         if (this.flags.clicked) {
             fill(255, 255, 0);
         }
+        if(this.flags.invalid){
+            fill(255,0,0);
+        }
 
         ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
     }
 
+    
     isInside(x, y) {
         const d = dist(this.x, this.y, x, y);
         return d <= this.radius;
     }
-
+    
+    blink(){
+        let t=0;
+        let ref=this;
+        let repetitions=5;
+        let intervalID=window.setInterval(function(){
+            if(t==repetitions){
+                window.clearInterval(intervalID);
+            }
+            ref.flags.invalid=!ref.flags.invalid;
+            t++;
+        },500,repetitions);
+    }
 }

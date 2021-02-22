@@ -132,6 +132,8 @@ class GraphUI {
             if (this.addingEdgeMode.vertices.length == 2) {
                 let done=this.#addingEdgeUtil(this.addingEdgeMode.vertices[0],this.addingEdgeMode.vertices[1])
                 if(!done){
+                    /* make the invalid clicked vertex blink*/
+                    this.addingEdgeMode.vertices[1].blink();
                     /* if i wasn't trying to create a self loop, "unclick" the second vertex
                     * otherwise the vertex has to stay clicked
                     */

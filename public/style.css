@@ -32,8 +32,8 @@
     text-align: center;
     padding: 1.5%;
     width: 15%;
-    height: 10%;
+    height: 15%;
     border-radius: 15px;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
+    background-color:#DDDDDD;
+    border: 2px solid black;
 }
