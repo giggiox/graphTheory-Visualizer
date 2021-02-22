@@ -21,6 +21,12 @@ class GraphUI {
         this.isWeighted= false;
     }
 
+    delete(){
+        this.graph=new Graph();
+        this.vertices=[];
+        this.edges=[];
+    }
+
     initRandomGraph(){
         let rnd=random(3,7);
         let i=0;

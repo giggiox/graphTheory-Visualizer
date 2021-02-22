@@ -81,3 +81,7 @@ $('#btn-add-edge').click(function(){
     }, 2500);
    
 })
+
+$('#delete-graph').click(function(){
+    graphUI.delete();
+})
