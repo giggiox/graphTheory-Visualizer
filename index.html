@@ -18,17 +18,17 @@
             <div class="container justify-content-center">
                 <ul class="nav navbar-nav w-100 justify-content-between">
                     <li class="nav-item dropdown">
-                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">algorithm</a>
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" id="algorithm" href="#">choose an algorithm</a>
                         <div class="dropdown-menu" role="menu">
-                            <a class="dropdown-item algorithms" role="presentation" id="BFS" href="#">breadth-first search</a>
-                            <a class="dropdown-item algorithms" role="presentation" id="DFS" href="#">depth-first search</a>
+                            <a class="dropdown-item algorithms" role="presentation" id="BFS" href="#">breadth-first search</a><hr>
+                            <a class="dropdown-item algorithms" role="presentation" id="DFS" href="#">depth-first search</a><hr>
                             <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted!</b>" href="#">kruskal MST</a>
                         </div>
                     </li>
                 </ul>
                 
                 <ul class="nav navbar-nav justify-content-center" id="visualize">
-                    <button class="btn btn-danger" id="visualize-button" href="#">visualize breadth-first search</button>
+                    <button class="btn btn-success" id="visualize-button" href="#">visualize breadth-first search</button>
                 </ul>
                 <ul class="nav navbar-nav w-100 justify-content-end">
                     <li class="nav-item">
@@ -47,8 +47,8 @@
         <div class="container top10 bottom10">
             <div class="row">
                 <div class="col-sm-8">
-                    <button id="btn-add-vertex" class="btn btn-primary" Style="width: 100px;"><i class="fa fa-plus"></i> vertex</button>
-                    <button id="btn-add-edge" class="btn btn-danger" Style="width: 100px;"><i class="fa fa-plus"></i> edge</button>
+                    <button id="btn-add-vertex" class="btn btn-info" Style="width: 100px;"><i class="fa fa-plus"></i> vertex</button>
+                    <button id="btn-add-edge" class="btn btn-info" Style="width: 100px;"><i class="fa fa-plus"></i> edge</button>
                     <label class="switch left20"> 
                         <input type="checkbox" id="graph-weighted-checkbox">
                         <span class="slider round"></span>

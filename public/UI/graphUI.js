@@ -230,7 +230,7 @@ class GraphUI {
     }
 
     #renderKruskal(){
-        if(!this.performingKruskal) return;
+        if(!this.performingKruskal || !this.isWeighted) return;
         this.#resetEdgesHighlight();
         let visitedEdges = this.graph.kruskal();
         this.#highlightEdgeList(visitedEdges);
