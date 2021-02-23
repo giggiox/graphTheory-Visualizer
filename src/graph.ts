@@ -177,6 +177,67 @@ class Graph<T>{
     }
 
 
+    dijkstra(start:T,end:T):Array<Edge<T>>{
+        let dist = new Map<T,number>();
+        let previous = new Map<T,T>();
+        let Q=new Array<T>();
+        for(let v of this.vertices.keys()){
+            dist.set(v,Infinity);
+            previous.set(v,undefined);
+            Q.push(v);
+        }
+        dist.set(start,0);
+
+        while(Q.length!= 0){
+            let u: T= this.queueVertexWithMinDistance(Q,dist);
+            Q.splice(Q.indexOf(u,0),1);
+            if(dist.get(u) == Infinity){
+                break;
+            }
+
+            if(u == end){
+                let s=new  Array<Edge<T>>();
+                let u = end;
+                while(previous.get(u) != undefined){
+                    s.push(new Edge(new Vertex(u),new Vertex(previous.get(u))));
+                    u=previous.get(u);
+                }
+                return s;
+            }
+            for(let v of this.getAdjacentVertices(u)){
+                let alt=dist.get(u) + v.weight;
+                if(alt < dist.get(v.info)){
+                    dist.set(v.info,alt);
+                    previous.set(v.info,u);
+                }
+            }
+        }
+    }
+
+    private queueVertexWithMinDistance(queue: Array<T>,dist: Map<T,number>):T{
+        let minDistance=dist.get(queue[0]);
+        let minVertex: T=queue[0];
+        for(let i=1;i<queue.length;i++){
+            let distanceValue=dist.get(queue[i]);
+            if(distanceValue < minDistance){
+                minDistance=distanceValue;
+                minVertex=queue[i];
+            }
+        }
+        return minVertex;
+    }
+
+    private getMinDistanceVertex(from: Array<T>,dist:any){
+        let min=0;
+        for(let v of from){
+            if(dist[v]<min){
+                min=Number(v);
+            }
+        }
+        return min;
+    }
+
+
     toString(): string {
         let t = "";
         for (var key of this.vertices.keys()) {
@@ -196,26 +257,42 @@ class Graph<T>{
 
 }
 
-/*
-let grafo = new Graph<number>();
+/*let grafo = new Graph<number>();
+grafo.addVertex(1);
+grafo.addVertex(2);
+grafo.addVertex(3);
+grafo.addVertex(4);
 grafo.addVertex(5);
-grafo.addVertex(6);
-grafo.addVertex(7);
-grafo.addVertex(8);
-grafo.addVertex(9);
 
-grafo.addEdge(5, 6, false);
-grafo.addEdge(6, 7, false);
-grafo.addEdge(6, 8, false);
-grafo.addEdge(7, 9, false);
+grafo.addEdge(1, 2, false);
+grafo.addEdge(1, 4, false);
+grafo.addEdge(4,5, false);
+grafo.addEdge(2,5, false);
+grafo.addEdge(2,3, false);
+grafo.addEdge(3,5, false);
+grafo.addEdge(2,4, false);
 
+grafo.addWeight(1,2,6);
+grafo.addWeight(1,4,1);
+grafo.addWeight(4,5,1);
+grafo.addWeight(2,5,2);
+grafo.addWeight(2,3,5);
+grafo.addWeight(3,5,5);
+grafo.addWeight(2,4,2);
 
 //grafo.removeEdge(7, 9);
 //grafo.removeEdge(5, 6);
 
 console.log(grafo.toString());
 
-console.log(grafo.BFS(8));
+/*console.log(grafo.BFS(8));
 console.log(grafo.DFS(8));
-
+*/
 //console.log(grafo.getVerticiAdiacenti(1));*/
+
+/*console.log(grafo.BFS(1));
+
+console.log("dijkstra");
+let ret=grafo.dijkstra(1,3);
+console.log(ret);
+*/

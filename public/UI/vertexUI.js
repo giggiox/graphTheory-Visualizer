@@ -8,7 +8,8 @@ class VertexUI {
             hover: false,
             dragging: false,
             clicked: false,
-            invalid:false
+            invalid:false,
+            dijkstra: false
         };
 
         this.radius = 25;
@@ -42,6 +43,9 @@ class VertexUI {
         }
         if(this.flags.invalid){
             fill(255,0,0);
+        }
+        if(this.flags.dijkstra){
+            fill(30, 144, 255);
         }
 
         ellipse(this.x, this.y, this.radius * 2, this.radius * 2);

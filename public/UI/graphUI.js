@@ -15,9 +15,18 @@ class GraphUI {
             vertices: []
         }
 
+        this.dijkstraVerticesChoosing={
+            enabled: false,
+            start: null,
+            destination: null,
+            done: false
+        }
+
         this.performingBFS = false;
         this.performingDFS = false;
-        this.performKruskal = false;
+        this.performingKruskal = false;
+        this.performingDijkstra = false;
+
         this.isWeighted= false;
     }
 
@@ -74,6 +83,8 @@ class GraphUI {
         this.#renderVertices();
         this.#renderKruskal();
 
+        this.#renderDijkstra();
+
         //TODO volatile window with different representations
         textSize(13);
         text(this.graph.toString(), width-200, height-200);
@@ -110,6 +121,8 @@ class GraphUI {
             if (vertexUI.flags.hover) {
 
                 this.#addingEdge(vertexUI);
+
+                this.#chosing2VerticesDijkstra(vertexUI);
                 
                 vertexUI.flags.dragging = true;
                 this.draggedVertex.vertex = vertexUI;
@@ -139,30 +152,43 @@ class GraphUI {
 
     #addingEdge(vertexUI){
         /*adding edge mode */
-        if (this.addingEdgeMode.enabled) {
-            vertexUI.flags.clicked = true;
-            this.addingEdgeMode.vertices.push(vertexUI);
-            if (this.addingEdgeMode.vertices.length == 2) {
-                let done=this.#addingEdgeUtil(this.addingEdgeMode.vertices[0],this.addingEdgeMode.vertices[1])
-                if(!done){
-                    /* make the invalid clicked vertex blink*/
-                    this.addingEdgeMode.vertices[1].blink();
-                    /* if i wasn't trying to create a self loop, "unclick" the second vertex
-                    * otherwise the vertex has to stay clicked
-                    */
-                    if(this.addingEdgeMode.vertices[1] != this.addingEdgeMode.vertices[0])
-                        this.addingEdgeMode.vertices[1].flags.clicked=false;
-                    this.addingEdgeMode.vertices.splice(-1,1);
-                }else{
-                    this.addingEdgeMode.vertices[0].flags.clicked = false;
-                    this.addingEdgeMode.vertices[1].flags.clicked = false;
-                    this.addingEdgeMode.vertices = [];
-                    this.addingEdgeMode.enabled=false;
-                }
+        if (!this.addingEdgeMode.enabled) return;
+        vertexUI.flags.clicked = true;
+        this.addingEdgeMode.vertices.push(vertexUI);
+        if (this.addingEdgeMode.vertices.length == 2) {
+            let done=this.#addingEdgeUtil(this.addingEdgeMode.vertices[0],this.addingEdgeMode.vertices[1])
+            if(!done){
+                /* make the invalid clicked vertex blink*/
+                this.addingEdgeMode.vertices[1].blink();
+                /* if i wasn't trying to create a self loop, "unclick" the second vertex
+                * otherwise the vertex has to stay clicked
+                */
+                if(this.addingEdgeMode.vertices[1] != this.addingEdgeMode.vertices[0])
+                    this.addingEdgeMode.vertices[1].flags.clicked=false;
+                this.addingEdgeMode.vertices.splice(-1,1);
+            }else{
+                this.addingEdgeMode.vertices[0].flags.clicked = false;
+                this.addingEdgeMode.vertices[1].flags.clicked = false;
+                this.addingEdgeMode.vertices = [];
+                this.addingEdgeMode.enabled=false;
             }
         }
         /* */
     }
+
+    #chosing2VerticesDijkstra(vertexUI){
+        if(!this.dijkstraVerticesChoosing.enabled) return;
+        vertexUI.flags.dijkstra = true;
+        if(this.dijkstraVerticesChoosing.start == null){
+            this.dijkstraVerticesChoosing.start=vertexUI;
+        }else{
+            this.dijkstraVerticesChoosing.destination=vertexUI;
+            this.dijkstraVerticesChoosing.done=true;
+            this.dijkstraVerticesChoosing.enabled=false;
+        }
+    }
+
+    
 
     #addingEdgeUtil(vertexUI1,vertexUI2){
         let edgeAdded = this.graph.addEdge(vertexUI1.label,vertexUI2.label);
@@ -229,10 +255,30 @@ class GraphUI {
         /*kruskal is countinuosly rendered inside the render function */        
     }
 
+    performDijkstra(){
+        if(this.performingDijkstra){
+            this.performingDijkstra = false;
+            this.dijkstraVerticesChoosing.enabled=false;
+            this.#resetEdgesHighlight();
+        }else{
+            this.dijkstraVerticesChoosing.enabled=true;
+            this.performingDijkstra=true;
+        }
+
+        /* dijkstra is continuosly rendered inside the render function */
+    }
+
     #renderKruskal(){
         if(!this.performingKruskal || !this.isWeighted) return;
         this.#resetEdgesHighlight();
         let visitedEdges = this.graph.kruskal();
+        this.#highlightEdgeList(visitedEdges);
+    }
+
+    #renderDijkstra(){
+        if(!this.dijkstraVerticesChoosing.done || !this.isWeighted) return;
+        this.#resetEdgesHighlight();
+        let visitedEdges = this.graph.dijkstra(this.dijkstraVerticesChoosing.start.label,this.dijkstraVerticesChoosing.destination.label);
         this.#highlightEdgeList(visitedEdges);
     }
 

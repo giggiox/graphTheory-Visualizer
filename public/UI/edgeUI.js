@@ -34,7 +34,7 @@ class EdgeUI {
         }
 
         if (this.graphUI.isWeighted) {
-            let d = int(dist(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y));
+            let d = int(dist(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y)) /20;
             this.weight = d;
             push();
             translate((this.vertexUI1.x + this.vertexUI2.x) / 2, (this.vertexUI1.y + this.vertexUI2.y) / 2);

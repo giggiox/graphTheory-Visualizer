@@ -41,8 +41,16 @@ $('#KRUSKAL').hover(function(){
         $('#KRUSKAL').tooltip('disable');
     }
 })
+$('#DIJKSTRA').hover(function(){
+    if(!$('#graph-weighted-checkbox').prop('checked')){
+        $('#DIJKSTRA').tooltip('enable');
+    }else{
+        $('#DIJKSTRA').tooltip('disable');
+    }
+})
+
 $('.algorithms').click(function(){
-    if(($(this).attr('id') == "KRUSKAL") && !$('#graph-weighted-checkbox').prop('checked')){
+    if(($(this).attr('id') == "KRUSKAL" || $(this).attr('id') == "DIJKSTRA") && !$('#graph-weighted-checkbox').prop('checked')){
             return;
     }
     $('#visualize-button').text("visualize " + $(this).text());
@@ -63,6 +71,8 @@ $('#visualize-button').click(function(){
             break;
         case "KRUSKAL":
             graphUI.performKrskal();
+        case "DIJKSTRA":
+            graphUI.performDijkstra();
             break;
         default:
             console.log("no action to perform");
