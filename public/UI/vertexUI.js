@@ -9,7 +9,7 @@ class VertexUI {
             dragging: false,
             clicked: false,
             invalid:false,
-            dijkstra: false
+            highlighted: false
         };
 
         this.radius = 25;
@@ -44,13 +44,21 @@ class VertexUI {
         if(this.flags.invalid){
             fill(255,0,0);
         }
-        if(this.flags.dijkstra){
+        if(this.flags.highlighted){
             fill(30, 144, 255);
         }
+
 
         ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
     }
 
+    resetFlags(){
+        this.flags.hover= false;
+        this.dragging= false;
+        this.clicked= false;
+        this.invalid=false;
+        this.dijkstra= false;
+    }
     
     isInside(x, y) {
         const d = dist(this.x, this.y, x, y);

@@ -64,15 +64,15 @@ $('#visualize-button').click(function(){
     let perform_id=$('#visualize-button').data('perform_id');
     switch(perform_id){
         case "BFS":
-            graphUI.performBFS();
+            graphUI.visualizeOperation(new BFSOperation());
             break;
         case "DFS":
-            graphUI.performDFS();
+            graphUI.visualizeOperation(new DFSOperation());
             break;
         case "KRUSKAL":
-            graphUI.performKrskal();
+            graphUI.visualizeOperation(new KruskalOperation());
         case "DIJKSTRA":
-            graphUI.performDijkstra();
+            graphUI.visualizeOperation(new DijkstraOperation());
             break;
         default:
             console.log("no action to perform");
@@ -85,7 +85,8 @@ $('#btn-add-vertex').click(function(){
 
 $('#btn-add-edge').click(function(){
     
-    let added=graphUI.addEdge();
+    //let added=graphUI.addEdge();
+    let added=graphUI.visualizeOperation(new AddEdgeOperation());
     if(added){
         $('#first-vertex-select-tip').show();
         setTimeout(function() { 

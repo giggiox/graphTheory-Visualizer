@@ -10,22 +10,9 @@ class GraphUI {
             dy: null
         }
 
-        this.addingEdgeMode={
-            enabled: false,
-            vertices: []
-        }
 
-        this.dijkstraVerticesChoosing={
-            enabled: false,
-            start: null,
-            destination: null,
-            done: false
-        }
-
-        this.performingBFS = false;
-        this.performingDFS = false;
-        this.performingKruskal = false;
-        this.performingDijkstra = false;
+        this.currentOperation = null;
+        this.currentOperationConsecutiveClicks=null;
 
         this.isWeighted= false;
     }
@@ -81,9 +68,13 @@ class GraphUI {
     render() {
         this.#renderEdges();
         this.#renderVertices();
-        this.#renderKruskal();
 
-        this.#renderDijkstra();
+        if(this.currentOperation != null){
+            if(this.currentOperation.continuoslyRendered){
+                this.currentOperation.render();
+            } 
+        }
+
 
         //TODO volatile window with different representations
         textSize(13);
@@ -120,9 +111,16 @@ class GraphUI {
             let vertexUI = this.vertices[i];
             if (vertexUI.flags.hover) {
 
-                this.#addingEdge(vertexUI);
+                //this.#addingEdge(vertexUI);
 
-                this.#chosing2VerticesDijkstra(vertexUI);
+                //this.#chosing2VerticesDijkstra(vertexUI);
+                if(this.currentOperation != null){
+                    console.log(this.currentOperation);
+                    this.currentOperation.update(vertexUI);
+                }
+                if(this.currentOperationConsecutiveClicks != null){
+                    this.currentOperationConsecutiveClicks.update(vertexUI);
+                }
                 
                 vertexUI.flags.dragging = true;
                 this.draggedVertex.vertex = vertexUI;
@@ -140,8 +138,6 @@ class GraphUI {
                 return;
             }
         }
-
-        //this.#updateDraggedVertexPosition();
     }
 
 
@@ -149,46 +145,6 @@ class GraphUI {
         this.isWeighted = !this.isWeighted;
         this.graph.isWeighted = this.isWeighted;
     }
-
-    #addingEdge(vertexUI){
-        /*adding edge mode */
-        if (!this.addingEdgeMode.enabled) return;
-        vertexUI.flags.clicked = true;
-        this.addingEdgeMode.vertices.push(vertexUI);
-        if (this.addingEdgeMode.vertices.length == 2) {
-            let done=this.#addingEdgeUtil(this.addingEdgeMode.vertices[0],this.addingEdgeMode.vertices[1])
-            if(!done){
-                /* make the invalid clicked vertex blink*/
-                this.addingEdgeMode.vertices[1].blink();
-                /* if i wasn't trying to create a self loop, "unclick" the second vertex
-                * otherwise the vertex has to stay clicked
-                */
-                if(this.addingEdgeMode.vertices[1] != this.addingEdgeMode.vertices[0])
-                    this.addingEdgeMode.vertices[1].flags.clicked=false;
-                this.addingEdgeMode.vertices.splice(-1,1);
-            }else{
-                this.addingEdgeMode.vertices[0].flags.clicked = false;
-                this.addingEdgeMode.vertices[1].flags.clicked = false;
-                this.addingEdgeMode.vertices = [];
-                this.addingEdgeMode.enabled=false;
-            }
-        }
-        /* */
-    }
-
-    #chosing2VerticesDijkstra(vertexUI){
-        if(!this.dijkstraVerticesChoosing.enabled) return;
-        vertexUI.flags.dijkstra = true;
-        if(this.dijkstraVerticesChoosing.start == null){
-            this.dijkstraVerticesChoosing.start=vertexUI;
-        }else{
-            this.dijkstraVerticesChoosing.destination=vertexUI;
-            this.dijkstraVerticesChoosing.done=true;
-            this.dijkstraVerticesChoosing.enabled=false;
-        }
-    }
-
-    
 
     #addingEdgeUtil(vertexUI1,vertexUI2){
         let edgeAdded = this.graph.addEdge(vertexUI1.label,vertexUI2.label);
@@ -201,15 +157,12 @@ class GraphUI {
     }
 
     mouseDragged() {
-        this.#updateDraggedVertexPosition();
-    }
-
-    #updateDraggedVertexPosition(){
         if (!this.draggedVertex.vertex)
             return;
         this.draggedVertex.vertex.x = mouseX - this.draggedVertex.dx;
         this.draggedVertex.vertex.y = mouseY - this.draggedVertex.dy;
     }
+
 
     mouseReleased() {
         if (!this.draggedVertex.vertex) return;
@@ -218,71 +171,27 @@ class GraphUI {
     }
 
 
-    performBFS(){
-        /* the second time button is clicked it will reset all the edges highlighted and return */
-        if(this.performingBFS){
-            this.performingBFS = false;
-            this.#resetEdgesHighlight();
-            return;
+    visualizeOperation(operation){
+        if(this.currentOperation != null && !operation.consecutiveClicks){
+            let currentOperation= this.currentOperation;
+            this.currentOperation.end();
+            this.currentOperation = null;
+            if(currentOperation.constructor.name == operation.constructor.name) return;
         }
-
-        this.performingBFS=true;
-        let visitedEdges = this.graph.BFS(1);
-        this.#highlightEdgeList(visitedEdges);
-    }
-
-    performDFS(){
-        /* the second time button is clicked it will reset all the edges highlighted and return */
-        if(this.performingDFS){
-            this.performingDFS = false;
-            this.#resetEdgesHighlight();
-            return;
-        }
-
-        this.performingDFS=true;
-        let visitedEdges = this.graph.DFS(1);
-        this.#highlightEdgeList(visitedEdges);
-    }
-
-    performKrskal(){
-        /* the second time button is clicked it will reset all the edges highlighted and return */
-        if(this.performingKruskal){
-            this.performingKruskal = false;
-            this.#resetEdgesHighlight();
+        if(operation.consecutiveClicks){
+            this.currentOperationConsecutiveClicks=operation;
         }else{
-            this.performingKruskal = true;
+            this.currentOperation=operation;
         }
-        /*kruskal is countinuosly rendered inside the render function */        
+        
+        
+        operation.graphUI = this;
+        
     }
 
-    performDijkstra(){
-        if(this.performingDijkstra){
-            this.performingDijkstra = false;
-            this.dijkstraVerticesChoosing.enabled=false;
-            this.#resetEdgesHighlight();
-        }else{
-            this.dijkstraVerticesChoosing.enabled=true;
-            this.performingDijkstra=true;
-        }
 
-        /* dijkstra is continuosly rendered inside the render function */
-    }
 
-    #renderKruskal(){
-        if(!this.performingKruskal || !this.isWeighted) return;
-        this.#resetEdgesHighlight();
-        let visitedEdges = this.graph.kruskal();
-        this.#highlightEdgeList(visitedEdges);
-    }
-
-    #renderDijkstra(){
-        if(!this.dijkstraVerticesChoosing.done || !this.isWeighted) return;
-        this.#resetEdgesHighlight();
-        let visitedEdges = this.graph.dijkstra(this.dijkstraVerticesChoosing.start.label,this.dijkstraVerticesChoosing.destination.label);
-        this.#highlightEdgeList(visitedEdges);
-    }
-
-    #highlightEdgeList(edgeList){
+    highlightEdgeList(edgeList){
         let referenceToThis=this;
         edgeList.forEach(function (edge) {
             //have to find the corrisponding UI edge that has edge.u.info as "first" vertex and edge.v.info as "second" vertex
@@ -294,9 +203,157 @@ class GraphUI {
         });
     }
 
-    #resetEdgesHighlight(){
+    resetEdgesHighlight(){
         this.edges.forEach(function(edgeUI){
             edgeUI.flags.highlighted=false;
         });
+    }
+
+
+}
+
+class BFSOperation{
+    constructor(){
+        this.continuoslyRendered=false;
+        this.consecutiveClicks = false;
+        this.graphUI = null;
+        this.startingVertex = null;
+    }
+
+    update(vertexUI){
+        if(this.startingVertex != null) return;
+        this.startingVertex=vertexUI;
+        vertexUI.flags.highlighted = true;
+        this.#visualize();
+    }
+
+    #visualize(){
+        let edgeList=this.graphUI.graph.BFS(this.startingVertex.label);
+        this.graphUI.highlightEdgeList(edgeList);
+    }
+
+    end(){
+        this.graphUI.resetEdgesHighlight();
+        if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
+    }
+}
+
+class DFSOperation{
+    constructor(){
+        this.continuoslyRendered=false;
+        this.consecutiveClicks = false;
+        this.graphUI = null;
+        this.startingVertex = null;
+    }
+
+    update(vertexUI){
+        if(this.startingVertex != null) return;
+        this.startingVertex=vertexUI;
+        vertexUI.flags.highlighted = true;
+        this.#visualize();
+    }
+
+    #visualize(){
+        let edgeList=this.graphUI.graph.DFS(this.startingVertex.label);
+        this.graphUI.highlightEdgeList(edgeList);
+    }
+
+    end(){
+        this.graphUI.resetEdgesHighlight();
+        if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
+    }
+}
+
+class AddEdgeOperation{
+    constructor(){
+        this.continuoslyRendered=false;
+        this.consecutiveClicks = true;
+        this.graphUI = null;
+        this.startingVertex = null;
+        this.done = false;
+    }
+
+    update(vertexUI){
+        if(this.done) return;
+        if(this.startingVertex == null){
+            this.startingVertex = vertexUI;
+            vertexUI.flags.clicked=true;
+        }else{
+            let edgeAdded = this.graphUI.graph.addEdge(this.startingVertex.label,vertexUI.label);
+            if(!edgeAdded){
+                vertexUI.blink();
+                if(vertexUI != this.startingVertex){
+                    vertexUI.flags.clicked= false;
+                }
+                return;
+            }
+            this.graphUI.edges.push(new EdgeUI(this.startingVertex, vertexUI,this.graphUI));
+            vertexUI.flags.clicked=false;
+            this.startingVertex.flags.clicked=false;
+            this.done=true;
+        }
+    }
+    end(){
+
+    }
+}
+
+
+class KruskalOperation{
+    constructor(){
+        this.continuoslyRendered=true;
+        this.consecutiveClicks = false;
+        this.graphUI = null;
+    }
+
+    update(){
+    }
+    end(){
+        this.graphUI.resetEdgesHighlight();
+    }
+
+    render(){
+        this.graphUI.resetEdgesHighlight();
+        let visitedEdges = this.graphUI.graph.kruskal();
+        this.graphUI.highlightEdgeList(visitedEdges);
+    }
+}
+
+
+class DijkstraOperation{
+    constructor(){
+        this.continuoslyRendered=true;
+        this.consecutiveClicks = false;
+        this.graphUI = null;
+        this.startingVertex = null;
+        this.destinationVertex = null;
+        this.startHighlight = false;
+        this.done=false;
+    }
+
+    update(vertexUI){
+        if(this.startHighlight) return;
+        if(this.startingVertex == null){
+            this.startingVertex = vertexUI;
+            vertexUI.flags.highlighted=true;
+        }else{
+            this.destinationVertex = vertexUI;
+            vertexUI.flags.highlighted=true;
+            this.startHighlight=true;
+        }
+    }
+
+    render(){
+        if(!this.startHighlight || this.done) return;
+        this.graphUI.resetEdgesHighlight();
+        let visitedEdges = this.graphUI.graph.dijkstra(this.startingVertex.label,this.destinationVertex.label);
+        this.graphUI.highlightEdgeList(visitedEdges);
+    }
+    end(){
+        this.done=true;
+        this.graphUI.resetEdgesHighlight();
+        this.startingVertex.flags.highlighted=false;
+        this.destinationVertex.flags.highlighted=false;
+
     }
 }
