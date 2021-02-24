@@ -49,17 +49,23 @@ $('#DIJKSTRA').hover(function(){
     }
 })
 
+
+let previous;
 $('.algorithms').click(function(){
     if(($(this).attr('id') == "KRUSKAL" || $(this).attr('id') == "DIJKSTRA") && !$('#graph-weighted-checkbox').prop('checked')){
             return;
     }
+    $("#visualize-button").attr("class","btn btn-success");
     $('#visualize-button').text("visualize " + $(this).text());
+
     $('#visualize-button').data('perform_id',$(this).attr('id'));
 });
 
 $('#graph-weighted-checkbox').click(function(){
     graphUI.setWeighted();
 })
+
+let previusText;
 $('#visualize-button').click(function(){
     let perform_id=$('#visualize-button').data('perform_id');
     switch(perform_id){
@@ -71,12 +77,16 @@ $('#visualize-button').click(function(){
             break;
         case "KRUSKAL":
             graphUI.visualizeOperation(new KruskalOperation());
+            break;
         case "DIJKSTRA":
             graphUI.visualizeOperation(new DijkstraOperation());
             break;
         default:
             console.log("no action to perform");
     }
+
+    $("#visualize-button").text("clear visualization");
+    $("#visualize-button").attr("class","btn btn-danger");
 });
 
 $('#btn-add-vertex').click(function(){

@@ -14,6 +14,7 @@ class GraphUI {
         this.currentOperation = null;
         this.currentOperationConsecutiveClicks=null;
 
+
         this.isWeighted= false;
     }
 
@@ -214,20 +215,25 @@ class GraphUI {
 
 class BFSOperation{
     constructor(){
-        this.continuoslyRendered=false;
+        this.continuoslyRendered=true;
         this.consecutiveClicks = false;
         this.graphUI = null;
         this.startingVertex = null;
+
+        this.canRender=false;
     }
 
     update(vertexUI){
         if(this.startingVertex != null) return;
         this.startingVertex=vertexUI;
         vertexUI.flags.highlighted = true;
-        this.#visualize();
+        this.canRender = true;
+        //this.render();
     }
 
-    #visualize(){
+    render(){
+        if(!this.canRender) return;
+        this.graphUI.resetEdgesHighlight();
         let edgeList=this.graphUI.graph.BFS(this.startingVertex.label);
         this.graphUI.highlightEdgeList(edgeList);
     }
@@ -240,20 +246,24 @@ class BFSOperation{
 
 class DFSOperation{
     constructor(){
-        this.continuoslyRendered=false;
+        this.continuoslyRendered=true;
         this.consecutiveClicks = false;
         this.graphUI = null;
         this.startingVertex = null;
+
+        this.canRender=false;
     }
 
     update(vertexUI){
         if(this.startingVertex != null) return;
         this.startingVertex=vertexUI;
         vertexUI.flags.highlighted = true;
-        this.#visualize();
+        this.canRender=true;
     }
 
-    #visualize(){
+    render(){
+        if(!this.canRender) return;
+        this.graphUI.resetEdgesHighlight();
         let edgeList=this.graphUI.graph.DFS(this.startingVertex.label);
         this.graphUI.highlightEdgeList(edgeList);
     }
