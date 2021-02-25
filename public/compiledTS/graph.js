@@ -354,7 +354,7 @@ var Graph = /** @class */ (function () {
                         t += "," + Math.round(vertex.weight);
                     vertex = vertex.next;
                 }
-                t += "\n";
+                t += "<br>";
             }
         }
         catch (e_8_1) { e_8 = { error: e_8_1 }; }

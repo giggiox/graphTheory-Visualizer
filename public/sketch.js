@@ -18,7 +18,7 @@ function draw() {
     background(255);
     graphUI.render();
     
-    let reprString=graphUI.graph.toString().replaceAll("\n","<br>");
+    let reprString=graphUI.graph.toString();
     $("#graph-representation").html(reprString);
 }
 
@@ -38,6 +38,7 @@ $(function(){
     $('#visualize-button').data('perform_id',"BFS");
     $('#one-vertex-select-tip').hide();
     $('#two-vertices-select-tip').hide();
+
 });
 $('#KRUSKAL').hover(function(){
     if(!$('#graph-weighted-checkbox').prop('checked')){
@@ -136,4 +137,21 @@ $('#delete-graph').click(function(){
 
 $('#randomize-graph').click(function(){
     graphUI.createRandomizedGraph();
+})
+
+
+let graphRepresentationToggle=false;
+$("#representation-button").click(function() {
+    //"overriding" dropdown basic functions, in order to not hide dropdown when focus out.
+    //the dropdown has to hide/show only when the button is clicked,never in any other way
+    if(graphRepresentationToggle){
+        //since there is no dropdown('untoggle'), removethe data-toggle attribute will do the work.
+        $("#representation-button").attr("data-toggle","dropdown"); 
+        toggle=false;
+    }else{
+        $("#representation-button").attr("data-toggle","");
+        $("#representation-button").dropdown('toggle');
+        toggle=true;
+    }
+    
 })

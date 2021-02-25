@@ -287,7 +287,7 @@ class Graph<T>{
                     t+=","+Math.round(vertex.weight);
                 vertex = vertex.next;
             }
-            t += "\n";
+            t += "<br>";
         }
 
         return t;
