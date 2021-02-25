@@ -1,12 +1,9 @@
 class KruskalOperation{
     constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
         this.graphUI = null;
     }
 
-    update(){
-    }
+    updateVertexClicked(){}
     end(){
         this.graphUI.resetEdgesHighlight();
     }

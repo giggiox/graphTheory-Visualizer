@@ -10,7 +10,12 @@ class GraphUI {
             dy: null
         }
         this.currentOperation = null;
-        this.currentOperationConsecutiveClicks=null;
+
+        this.addingEdge ={
+            enabled: false,
+            startingVertex:null,
+            done:false
+        }
         this.isWeighted= false;
     }
 
@@ -18,6 +23,7 @@ class GraphUI {
         this.graph=new Graph();
         this.vertices=[];
         this.edges=[];
+        this.currentOperation=null;
     }
 
     initRandomGraph(){
@@ -31,7 +37,7 @@ class GraphUI {
         while(i<random(rnd,rnd+8)){
             let vertexUI1=this.vertices[Math.floor(Math.random() * this.vertices.length)]
             let vertexUI2=this.vertices[Math.floor(Math.random() * this.vertices.length)]
-            this.#addingEdgeUtil(vertexUI1,vertexUI2)
+            this.#addingEdgeUtil(vertexUI1,vertexUI2);
             i++;
         }
     }
@@ -47,34 +53,61 @@ class GraphUI {
         this.graph.addVertex(u);
     }
 
-    /*
-    * returns true if edge is added, false otherwise
-    */
-    addEdge() {
-        /* switch true and false if button is clicked more two+ times */
-        this.addingEdgeMode.enabled = !this.addingEdgeMode.enabled;
-
-        /* 
-        * if edge mode is clicked the 2nd time after a vertex is being clicked, have to reset clicked vertices
-        * (tha array only has it's first element vertices[0]) and the vertices[0] clicked color has to be reset 
-        */
-        if(!this.addingEdgeMode.enabled){
-            this.addingEdgeMode.vertices.forEach(function(vertexUI){
-                vertexUI.flags.clicked = false;
-            });
-            this.addingEdgeMode.vertices=[];
-        }
-        return this.addingEdgeMode.enabled;
+    setWeighted(){
+        this.isWeighted = !this.isWeighted;
+        this.graph.isWeighted = this.isWeighted;
     }
+
+    /*
+    * return true if edge is added, false otherwise
+    */
+    addEdge(){
+        this.addingEdge.enabled=!this.addingEdge.enabled;
+        if(!this.addingEdge.enabled && this.addingEdge.startingVertex != null){
+            this.addingEdge.startingVertex.flags.clicked = false;
+            this.addingEdge.startingVertex=null;
+        }
+        return this.addingEdge.enabled;
+    }
+
+    #updateVertexClickedForAddingEdge(vertexUI){
+        if(this.addingEdge.startingVertex == null){
+            this.addingEdge.startingVertex = vertexUI;
+            vertexUI.flags.clicked=true;
+        }else{
+            if(!this.#addingEdgeUtil(this.addingEdge.startingVertex,vertexUI)){
+                vertexUI.blink();
+                if(vertexUI != this.startingVertex){
+                    vertexUI.flags.clicked= false;
+                }
+                return;
+            }
+            vertexUI.flags.clicked=false;
+            this.addingEdge.startingVertex.flags.clicked=false;
+            this.addingEdge.startingVertex=null;
+            this.addingEdge.enabled = false;
+        }
+    }
+
+    #addingEdgeUtil(vertexUI1,vertexUI2){
+        let edgeAdded = this.graph.addEdge(vertexUI1.label,vertexUI2.label);
+        if(!edgeAdded){
+            return false;
+        }
+        this.edges.push(new EdgeUI(vertexUI1, vertexUI2,this));
+        return true;
+
+    }
+
+   
+
 
     render() {
         this.#renderEdges();
         this.#renderVertices();
 
         if(this.currentOperation != null){
-            if(this.currentOperation.continuoslyRendered){
-                this.currentOperation.render();
-            } 
+            this.currentOperation.render();
         }
 
 
@@ -113,17 +146,14 @@ class GraphUI {
             let vertexUI = this.vertices[i];
             if (vertexUI.flags.hover) {
 
-                //this.#addingEdge(vertexUI);
-
-                //this.#chosing2VerticesDijkstra(vertexUI);
+                /*send clicked vertex for operations*/
                 if(this.currentOperation != null){
-                    console.log(this.currentOperation);
-                    this.currentOperation.update(vertexUI);
+                    this.currentOperation.updateVertexClicked(vertexUI);
                 }
-                if(this.currentOperationConsecutiveClicks != null){
-                    this.currentOperationConsecutiveClicks.update(vertexUI);
+                /*send clicked vertex for adding edge*/
+                if(this.addingEdge.enabled){
+                    this.#updateVertexClickedForAddingEdge(vertexUI);
                 }
-                
                 vertexUI.flags.dragging = true;
                 this.draggedVertex.vertex = vertexUI;
                 break;
@@ -142,22 +172,6 @@ class GraphUI {
         }
     }
 
-
-    setWeighted(){
-        this.isWeighted = !this.isWeighted;
-        this.graph.isWeighted = this.isWeighted;
-    }
-
-    #addingEdgeUtil(vertexUI1,vertexUI2){
-        let edgeAdded = this.graph.addEdge(vertexUI1.label,vertexUI2.label);
-        if(!edgeAdded){
-            return false;
-        }
-        this.edges.push(new EdgeUI(vertexUI1, vertexUI2,this));
-        return true;
-
-    }
-
     mouseDragged() {
         if (!this.draggedVertex.vertex)
             return;
@@ -174,22 +188,16 @@ class GraphUI {
 
 
     visualizeOperation(operation){
-        if(this.currentOperation != null && !operation.consecutiveClicks){
+        if(this.currentOperation != null){
             let currentOperation= this.currentOperation;
             this.currentOperation.end();
             this.currentOperation = null;
-            if(currentOperation.constructor.name == operation.constructor.name) return;
+            if(currentOperation.constructor.name == operation.constructor.name) return false;
         }
-        
-        if(operation.consecutiveClicks){
-            this.currentOperationConsecutiveClicks=operation;
-        }else{
-            this.currentOperation=operation;
-        }
-        
-        
+
+        this.currentOperation=operation;
         operation.graphUI = this;
-        
+        return true;
     }
 
 

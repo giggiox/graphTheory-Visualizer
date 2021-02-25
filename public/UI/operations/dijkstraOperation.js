@@ -1,7 +1,5 @@
 class DijkstraOperation{
     constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
         this.graphUI = null;
         this.startingVertex = null;
         this.destinationVertex = null;
@@ -9,7 +7,7 @@ class DijkstraOperation{
         this.done=false;
     }
 
-    update(vertexUI){
+    updateVertexClicked(vertexUI){
         if(this.startHighlight) return;
         if(this.startingVertex == null){
             this.startingVertex = vertexUI;

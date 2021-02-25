@@ -1,19 +1,15 @@
 class BFSOperation{
     constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
         this.graphUI = null;
         this.startingVertex = null;
-
         this.canRender=false;
     }
 
-    update(vertexUI){
+    updateVertexClicked(vertexUI){
         if(this.startingVertex != null) return;
         this.startingVertex=vertexUI;
         vertexUI.flags.highlighted = true;
         this.canRender = true;
-        //this.render();
     }
 
     render(){
