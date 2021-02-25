@@ -155,12 +155,6 @@ class GraphUI {
         if(this.currentOperation != null){
             this.currentOperation.render();
         }
-
-        /**
-         * @todo volatile window with different representations
-         */
-        textSize(13);
-        text(this.graph.toString(), width-200, height-200);
     }
 
 

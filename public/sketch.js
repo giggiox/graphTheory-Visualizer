@@ -17,6 +17,9 @@ function windowResized() {
 function draw() {
     background(255);
     graphUI.render();
+    
+    let reprString=graphUI.graph.toString().replaceAll("\n","<br>");
+    $("#graph-representation").html(reprString);
 }
 
 function mousePressed(){

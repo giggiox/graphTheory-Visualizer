@@ -351,7 +351,7 @@ var Graph = /** @class */ (function () {
                 while (vertex.next != null) {
                     t += "->" + vertex.info;
                     if (this.isWeighted)
-                        t += "," + vertex.weight;
+                        t += "," + Math.round(vertex.weight);
                     vertex = vertex.next;
                 }
                 t += "\n";
