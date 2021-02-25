@@ -1,5 +1,6 @@
-class BFSOperation{
+class BFSOperation extends Operation{
     constructor(){
+        super();
         this.graphUI = null;
         this.startingVertex = null;
         this.canRender=false;
@@ -14,13 +15,13 @@ class BFSOperation{
 
     render(){
         if(!this.canRender) return;
-        this.graphUI.resetEdgesHighlight();
+        super.clearEdgesHighlight();
         let edgeList=this.graphUI.graph.BFS(this.startingVertex.label);
-        this.graphUI.highlightEdgeList(edgeList);
+        super.highlightEdgeList(edgeList);
     }
 
     end(){
-        this.graphUI.resetEdgesHighlight();
+        super.clearEdgesHighlight();
         if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
     }
 }

@@ -1,5 +1,6 @@
-class DijkstraOperation{
+class DijkstraOperation extends Operation{
     constructor(){
+        super();
         this.graphUI = null;
         this.startingVertex = null;
         this.destinationVertex = null;
@@ -21,13 +22,13 @@ class DijkstraOperation{
 
     render(){
         if(!this.startHighlight || this.done) return;
-        this.graphUI.resetEdgesHighlight();
+        super.clearEdgesHighlight();
         let visitedEdges = this.graphUI.graph.dijkstra(this.startingVertex.label,this.destinationVertex.label);
-        this.graphUI.highlightEdgeList(visitedEdges);
+        super.highlightEdgeList(visitedEdges);
     }
     end(){
         this.done=true;
-        this.graphUI.resetEdgesHighlight();
+        super.clearEdgesHighlight();
         this.startingVertex.flags.highlighted=false;
         this.destinationVertex.flags.highlighted=false;
 
