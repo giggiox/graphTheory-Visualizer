@@ -3,29 +3,34 @@ class GraphUI {
         this.graph = graph == null ? new Graph() : graph;
         this.vertices = [];
         this.edges = [];
-
         this.draggedVertex = {
             vertex: null,
             dx: null,
             dy: null
         }
         this.currentOperation = null;
-
         this.addingEdge ={
             enabled: false,
-            startingVertex:null,
-            done:false
+            startingVertex:null
         }
         this.isWeighted= false;
     }
 
-    delete(){
+    /**
+     * deletes current GraphUI
+     */
+    deleteGraph(){
         this.graph=new Graph();
         this.vertices=[];
         this.edges=[];
         this.currentOperation=null;
+        this.addingEdge.enabled = false;
+        this.addingEdge.startingVertex = null;
     }
 
+    /**
+     * initialize random GraphUI
+     */
     initRandomGraph(){
         let rnd=random(3,7);
         let i=0;
@@ -42,15 +47,12 @@ class GraphUI {
         }
     }
 
-    randomize(){
-        this.delete();
+    /**
+     * deletes current GraphUI, and initialiezes a new random GraphUI
+     */
+    createRandomizedGraph(){
+        this.deleteGraph();
         this.initRandomGraph();
-    }
-
-    addVertex(u = null, x = null, y = null) {
-        u == null ? u = this.vertices.length +1 : u;
-        this.vertices.push(new VertexUI(u, x, y));
-        this.graph.addVertex(u);
     }
 
     setWeighted(){
@@ -58,9 +60,20 @@ class GraphUI {
         this.graph.isWeighted = this.isWeighted;
     }
 
-    /*
-    * return true if edge is added, false otherwise
-    */
+    /**
+     * @param {any} label -label of created vertex 
+     * @param {number} x -x spawn coordinate
+     * @param {number} y -y spawn coordinate
+     */
+    addVertex(label = null, x = null, y = null) {
+        label == null ? label = this.vertices.length +1 : label;
+        this.vertices.push(new VertexUI(label, x, y));
+        this.graph.addVertex(label);
+    }
+
+    /**
+     * @returns {boolean} true if edge is added, false otherwise
+     */
     addEdge(){
         this.addingEdge.enabled=!this.addingEdge.enabled;
         if(!this.addingEdge.enabled && this.addingEdge.startingVertex != null){
@@ -70,13 +83,18 @@ class GraphUI {
         return this.addingEdge.enabled;
     }
 
+    /**
+     * if addingEdge is enabled, every time users click on a vertex, a "update notification" is sent to this function
+     * which, if 2 vertices are clicked (and the second is valid, @see #addingEdgeUtil(VertexUI,VertexUI)) adds them to the graphUI 
+     * @param {VertexUI} vertexUI - vertex clicked in UI 
+     */
     #updateVertexClickedForAddingEdge(vertexUI){
         if(this.addingEdge.startingVertex == null){
             this.addingEdge.startingVertex = vertexUI;
             vertexUI.flags.clicked=true;
         }else{
             if(!this.#addingEdgeUtil(this.addingEdge.startingVertex,vertexUI)){
-                vertexUI.blink();
+                vertexUI.blink(4);
                 if(vertexUI != this.startingVertex){
                     vertexUI.flags.clicked= false;
                 }
@@ -89,6 +107,14 @@ class GraphUI {
         }
     }
 
+    /**
+     * utility method which checks for the 2 passed VertexUI, if they are valid this methods creates an edge in GraphUI and also in the Graph.
+     * The two vertices are considered invalid if they are the same (no self loops allowed) or if an edge alredy exists (no multigraph allowed).
+     * The validity checks is handled by the addEdge method in Graph class.
+     * @param {VertexUI} vertexUI1 
+     * @param {VertexUI} vertexUI2
+     * @returns {boolean} - true if edge is added, false otherwise 
+     */
     #addingEdgeUtil(vertexUI1,vertexUI2){
         let edgeAdded = this.graph.addEdge(vertexUI1.label,vertexUI2.label);
         if(!edgeAdded){
@@ -96,9 +122,32 @@ class GraphUI {
         }
         this.edges.push(new EdgeUI(vertexUI1, vertexUI2,this));
         return true;
-
     }
-    
+
+    /**
+     * visualize an operation: if trying to visualize the same Operation twice in a row, the first time
+     * it will be displayed normally, the second time will call endOperation() and not continue (operation not visualized), this is done by checking constructor.name.
+     * @param {Operation} operation - a subclass of Oberation class
+     * @returns {boolean} - true if the operation is visualized, false otherwise
+     */
+    visualizeOperation(operation){
+        if(this.currentOperation != null){
+            let currentOperation= this.currentOperation;
+            this.currentOperation.endOperation();
+            this.currentOperation = null;
+            if(currentOperation.constructor.name == operation.constructor.name) {
+                return false;
+            }
+        }
+        this.currentOperation=operation;
+        operation.graphUI = this;
+        return true;
+    }
+
+
+    /**
+     * graphUI elements that has to be rendered, this method is called by p5js draw() default function
+     */
     render() {
         this.#renderEdges();
         this.#renderVertices();
@@ -107,10 +156,30 @@ class GraphUI {
             this.currentOperation.render();
         }
 
-
-        //TODO volatile window with different representations
+        /**
+         * @todo volatile window with different representations
+         */
         textSize(13);
         text(this.graph.toString(), width-200, height-200);
+    }
+
+
+    #renderEdges(){
+        let referenceToThis = this;
+        this.edges.forEach(function (edge) {
+
+            if (edge.isInside(mouseX, mouseY)) {
+                edge.flags.hover = true;
+            } else {
+                edge.flags.hover = false;
+            }
+            
+            //constantly refresh weights
+            if(referenceToThis.isWeighted){
+                referenceToThis.graph.updateWeight(edge.vertexUI1.label,edge.vertexUI2.label,edge.weight);
+            }
+            edge.render();
+        });
     }
 
     #renderVertices(){
@@ -123,31 +192,20 @@ class GraphUI {
             vertex.render();
         });
     }
-    #renderEdges(){
-        let reference = this;
-        this.edges.forEach(function (edge) {
-            if (edge.isInside(mouseX, mouseY)) {
-                edge.flags.hover = true;
-            } else {
-                edge.flags.hover = false;
-            }
-            if(reference.isWeighted){
-                reference.graph.addWeight(edge.vertexUI1.label,edge.vertexUI2.label,edge.weight);
-            }
-            edge.render();
-        });
-    }
 
-    mousePressed() {
+    /**
+     * this method is called p5js mousePressed default function
+     */
+    mousePressedAction() {
         for (let i = 0; i < this.vertices.length; i++) {
             let vertexUI = this.vertices[i];
             if (vertexUI.flags.hover) {
 
-                /*send clicked vertex for operations*/
+                /*send clicked vertex for currentOperation, similar to Observer design pattern*/
                 if(this.currentOperation != null){
                     this.currentOperation.updateVertexClicked(vertexUI);
                 }
-                /*send clicked vertex for adding edge*/
+                /*send an update message to clicked vertex for adding edge*/
                 if(this.addingEdge.enabled){
                     this.#updateVertexClickedForAddingEdge(vertexUI);
                 }
@@ -168,31 +226,23 @@ class GraphUI {
             }
         }
     }
-
-    mouseDragged() {
+   /**
+     * this method is called p5js mouseDragged default function
+     */
+    mouseDraggedAction() {
         if (!this.draggedVertex.vertex)
             return;
         this.draggedVertex.vertex.x = mouseX - this.draggedVertex.dx;
         this.draggedVertex.vertex.y = mouseY - this.draggedVertex.dy;
     }
 
-
-    mouseReleased() {
-        if (!this.draggedVertex.vertex) return;
+   /**
+     * this method is called p5js mouseReleased default function
+     */
+    mouseReleasedAction() {
+        if (!this.draggedVertex.vertex)
+            return;
         this.draggedVertex.vertex.flags.dragging = false;
         this.draggedVertex.vertex = undefined;
-    }
-
-
-    visualizeOperation(operation){
-        if(this.currentOperation != null){
-            let currentOperation= this.currentOperation;
-            this.currentOperation.end();
-            this.currentOperation = null;
-            if(currentOperation.constructor.name == operation.constructor.name) return false;
-        }
-        this.currentOperation=operation;
-        operation.graphUI = this;
-        return true;
     }
 }

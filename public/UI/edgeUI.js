@@ -1,11 +1,9 @@
 class EdgeUI {
-
     constructor(vertexUI1, vertexUI2, graphUI) {
         this.vertexUI1 = vertexUI1;
         this.vertexUI2 = vertexUI2;
-        this.graphUI = graphUI; /* have to pass graphUI in order to automatcally obtain if graph is weighted or not */
+        this.graphUI = graphUI; /* graphUI reference is passed in order to automatcally obtain if graph is weighted or not */
         this.weight = null;
-
         this.flags = {
             hover: false,
             dragging: false,
@@ -14,10 +12,6 @@ class EdgeUI {
     }
 
     render() {
-        this.render_line();
-    }
-
-    render_line() {
         stroke(0);
         strokeWeight(3);
         if (this.flags.hover) {
@@ -49,13 +43,21 @@ class EdgeUI {
         line(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y);
     }
 
+
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     * @returns {boolean} -true if given (x,y) coordinates are inside EdgeUI line,false otherwise
+     */
     isInside(x, y) {
-        const d1 = dist(this.vertexUI1.x, this.vertexUI1.y, x, y);
-        const d2 = dist(this.vertexUI2.x, this.vertexUI2.y, x, y);
-        if (d1 <= this.vertexUI1.radius || d2 <= this.vertexUI2.radius) return false;
-        const length = dist(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y);
-        const cond1 = (d1 + d2) - 0.5 <= length;
-        const cond2 = (d1 + d2) + 0.5 >= length;
+        let distanceFromVertexUI1 = dist(this.vertexUI1.x, this.vertexUI1.y, x, y);
+        let distanceFromVertexUI2 = dist(this.vertexUI2.x, this.vertexUI2.y, x, y);
+        if (distanceFromVertexUI1 <= this.vertexUI1.radius || distanceFromVertexUI2 <= this.vertexUI2.radius)
+            return false;
+        let length = dist(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y);
+        let cond1 = (distanceFromVertexUI1 + distanceFromVertexUI2) - 0.5 <= length;
+        let cond2 = (distanceFromVertexUI1 + distanceFromVertexUI2) + 0.5 >= length;
         return cond1 && cond2;
     }
 

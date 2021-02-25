@@ -1,14 +1,26 @@
 class Operation{
-    constructor(){
-        this.graphUI =null;
+    constructor(graphUI){
+        this.graphUI =graphUI;
     }
 
+    render(){}
+    endOperation(){}
+    updateVertexClicked(vertexUI){}
+
+
+    /**
+     * clear the highlight from all edges of the graphUI
+     */
     clearEdgesHighlight(){
         this.graphUI.edges.forEach(function(edgeUI){
             edgeUI.flags.highlighted=false;
         });
     }
 
+    /**
+     * highlights every edge in passed edgeList
+     * @param {Array<Edge<any>>} edgeList 
+     */
     highlightEdgeList(edgeList){
         let referenceToThis=this;
         edgeList.forEach(function (edge) {
@@ -20,6 +32,4 @@ class Operation{
             });
         });
     }
-
-
 }

@@ -1,7 +1,6 @@
 class BFSOperation extends Operation{
-    constructor(){
-        super();
-        this.graphUI = null;
+    constructor(graphUI){
+        super(graphUI);
         this.startingVertex = null;
         this.canRender=false;
     }
@@ -20,7 +19,7 @@ class BFSOperation extends Operation{
         super.highlightEdgeList(edgeList);
     }
 
-    end(){
+    endOperation(){
         super.clearEdgesHighlight();
         if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
     }

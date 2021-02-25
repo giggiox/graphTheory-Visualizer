@@ -1,36 +1,36 @@
 class DijkstraOperation extends Operation{
-    constructor(){
-        super();
-        this.graphUI = null;
+    constructor(graphUI){
+        super(graphUI);
         this.startingVertex = null;
         this.destinationVertex = null;
-        this.startHighlight = false;
+        this.canRender = false;
         this.done=false;
     }
 
     updateVertexClicked(vertexUI){
-        if(this.startHighlight) return;
+        if(this.canRender) return;
         if(this.startingVertex == null){
             this.startingVertex = vertexUI;
             vertexUI.flags.highlighted=true;
         }else{
             this.destinationVertex = vertexUI;
             vertexUI.flags.highlighted=true;
-            this.startHighlight=true;
+            this.canRender=true;
         }
     }
 
     render(){
-        if(!this.startHighlight || this.done) return;
+        if(!this.canRender || this.done) return;
         super.clearEdgesHighlight();
-        let visitedEdges = this.graphUI.graph.dijkstra(this.startingVertex.label,this.destinationVertex.label);
-        super.highlightEdgeList(visitedEdges);
+        let edgeList = this.graphUI.graph.dijkstra(this.startingVertex.label,
+                                                        this.destinationVertex.label);
+        super.highlightEdgeList(edgeList);
     }
-    end(){
+
+    endOperation(){
         this.done=true;
         super.clearEdgesHighlight();
         this.startingVertex.flags.highlighted=false;
         this.destinationVertex.flags.highlighted=false;
-
     }
 }

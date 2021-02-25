@@ -6,7 +6,6 @@ function setup() {
     let cnv=createCanvas(width, height);
     cnv.parent('canvas');
     graphUI.initRandomGraph();
-
 }
 
 function windowResized() {
@@ -21,13 +20,15 @@ function draw() {
 }
 
 function mousePressed(){
-    graphUI.mousePressed();
+    graphUI.mousePressedAction();
 }
+
 function mouseDragged(){
-    graphUI.mouseDragged();
+    graphUI.mouseDraggedAction();
 }
+
 function mouseReleased(){
-    graphUI.mouseReleased();
+    graphUI.mouseReleasedAction();
 }
 
 $(function(){
@@ -57,7 +58,7 @@ $('.algorithms').click(function(){
     if(($(this).attr('id') == "KRUSKAL" || $(this).attr('id') == "DIJKSTRA") && !$('#graph-weighted-checkbox').prop('checked')){
             return;
     }
-    endVisualization=false;;
+    endVisualization=false;
     $("#visualize-button").attr("class","btn btn-success");
     $('#visualize-button').text("visualize " + $(this).text());
     $('#visualize-button').data('perform_id',$(this).attr('id'));
@@ -73,18 +74,18 @@ $('#visualize-button').click(function(){
     let doubleclicked;
     switch(perform_id){
         case "BFS":
-            doubleclicked=graphUI.visualizeOperation(new BFSOperation());
+            doubleclicked=graphUI.visualizeOperation(new BFSOperation(graphUI));
             if(doubleclicked)showOneVertexTip();
             break;
         case "DFS":
-            doubleclicked=graphUI.visualizeOperation(new DFSOperation());
+            doubleclicked=graphUI.visualizeOperation(new DFSOperation(graphUI));
             if(doubleclicked)showOneVertexTip();
             break;
         case "KRUSKAL":
-            graphUI.visualizeOperation(new KruskalOperation());
+            graphUI.visualizeOperation(new KruskalOperation(graphUI));
             break;
         case "DIJKSTRA":
-            doubleclicked=graphUI.visualizeOperation(new DijkstraOperation()); 
+            doubleclicked=graphUI.visualizeOperation(new DijkstraOperation(graphUI)); 
             if(doubleclicked)showTwoVerticesTip();
             break;
         default:
@@ -108,10 +109,9 @@ $('#btn-add-vertex').click(function(){
 })
 
 $('#btn-add-edge').click(function(){
-    
     let added=graphUI.addEdge();
-    //graphUI.visualizeOperation(new AddEdgeOperation());
-    if(added)showTwoVerticesTip();
+    if(added)
+        showTwoVerticesTip();
 })
 
 function showTwoVerticesTip(){
@@ -128,9 +128,9 @@ function showOneVertexTip(){
 }
 
 $('#delete-graph').click(function(){
-    graphUI.delete();
+    graphUI.deleteGraph();
 })
 
 $('#randomize-graph').click(function(){
-    graphUI.randomize();
+    graphUI.createRandomizedGraph();
 })

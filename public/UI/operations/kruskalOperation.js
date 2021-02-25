@@ -1,17 +1,16 @@
 class KruskalOperation extends Operation{
-    constructor(){
-        super();
+    constructor(graphUI){
+        super(graphUI);
         this.graphUI = null;
     }
 
-    updateVertexClicked(){}
-    end(){
+    endOperation(){
         super.clearEdgesHighlight();
     }
 
     render(){
         super.clearEdgesHighlight();
-        let visitedEdges = this.graphUI.graph.kruskal();
-        super.highlightEdgeList(visitedEdges);
+        let edgeList = this.graphUI.graph.kruskal();
+        super.highlightEdgeList(edgeList);
     }
 }

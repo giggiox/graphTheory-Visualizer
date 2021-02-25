@@ -1,5 +1,4 @@
 class Graph<T>{
-
     vertices: Map<T, Vertex<T>>;
     isWeighted: boolean = false;
 
@@ -7,32 +6,42 @@ class Graph<T>{
         this.vertices = vertici || new Map<T, Vertex<T>>();
     }
 
-
-    addVertex(vertice: T): void {
-        this.vertices.set(vertice, new Vertex<T>());
+    /**
+     * add a vertex to Map structure which represents vertices
+     * @param {T} vertex 
+     */
+    addVertex(vertex: T): void {
+        this.vertices.set(vertex, new Vertex<T>());
     }
 
-    /*
-    * add an ege, returns true if the edge is added (edge doesn't exists already or not a self loop), false otherwise
-    */
-    addEdge(a: T, b: T, directed: boolean): boolean {
-        if(this.edgeExists(a,b))
+
+    /**
+     * add and edge to graph, returns true if edge is added (edge doesn't exist already or not a self loop), false otherwise
+     * @see edgeExistsUtil(T,T) for edge existance checking
+     * @param {T} a -Vertex info
+     * @param {T} b -Vertex info
+     * @returns {boolean} -return true if edge is added with success, false otherwise
+     */
+    addEdge(a: T, b: T): boolean {
+        if(this.edgeExistsUtil(a,b))
             return false;
         let a1 = this.vertices.get(a);
         let adda = new Vertex<T>(b, a1);
         this.vertices.set(a, adda);
 
-        if (directed) return true;
         let b1 = this.vertices.get(b);
         let addb = new Vertex<T>(a, b1);
         this.vertices.set(b, addb);
         return true;
     }
 
-    /*
-    *   return true if edge already exists, or if it is a self loop. 
-    */
-    private edgeExists(a:T,b:T):boolean{
+    
+    /**
+     * return wether the edges already exists or not
+     * @param {T} a -Vertex info
+     * @param {T} b -Vertex info
+     */
+    private edgeExistsUtil(a:T,b:T):boolean{
         if(a==b){
             return true;
         } 
@@ -46,7 +55,11 @@ class Graph<T>{
         return false;
     }
 
-    private getAdjacentVertices(v: T): Array<Vertex<T>> {
+    /**
+     * @param {T} v 
+     * @returns {Array<Vertex<T>>}
+     */
+    private getAdjacentVerticesUtil(v: T): Array<Vertex<T>> {
         let vertice = this.vertices.get(v);
         let retList = new Array<Vertex<T>>();
         while (vertice.next != null) {
@@ -57,12 +70,13 @@ class Graph<T>{
 
     }
 
-    getVertexDegree(v: T): number {
-        return this.getAdjacentVertices(v).length;
-    }
-
-
+    /**
+     * removed edge from 2 vertices
+     * @param {T} u 
+     * @param {T} v 
+     */
     removeEdge(u: T, v: T): void {
+        /*remove edge from u adjacency list*/
         let verticeA = this.vertices.get(u);
         let previousA = verticeA;
         if (verticeA.info == v) {
@@ -72,10 +86,9 @@ class Graph<T>{
             previousA = verticeA;
             verticeA = verticeA.next;
         }
-
         previousA.next = verticeA.next;
 
-        //lo rimuovo da entrambe le liste di adiacenza
+        /*remove edge from v adjacency list*/
         let verticeB = this.vertices.get(v);
         let previousB = verticeB;
         if (previousB.info == u) {
@@ -88,7 +101,13 @@ class Graph<T>{
         previousB.next = verticeB.next;
     }
 
-    addWeight(u:T,v:T,weight: number){
+    /**
+     * updates weight of a given edge
+     * @param {T} u 
+     * @param {T} v 
+     * @param weight 
+     */
+    updateWeight(u:T,v:T,weight: number):void{
         let a1=this.vertices.get(u);
         while (a1.next != null && a1.info != v) {
             a1 = a1.next;
@@ -102,27 +121,34 @@ class Graph<T>{
     }
 
 
+    /**
+     * @param {T} start
+     * @returns {Array<Edge<T>>}
+     */
     BFS(start: T): Array<Edge<T>> {
-        let t = new Array<Edge<T>>();
+        let edges = new Array<Edge<T>>();
         let visited = new Set<T>();
         visited.add(start);
-        let frangia = []; // per BFS frangia usata come coda;
+        let frangia = []; 
         frangia.push(start);
         while (frangia.length != 0) {
             let u = frangia.shift();
-            let verticiAdiacenti = this.getAdjacentVertices(u);
-            for (var v of verticiAdiacenti) {
+            let adjacentVertices = this.getAdjacentVerticesUtil(u);
+            for (var v of adjacentVertices) {
                 if (!visited.has(v.info)) {
                     visited.add(v.info);
-                    t.push(new Edge(new Vertex(u),new Vertex(v.info)))
+                    edges.push(new Edge(new Vertex(u),new Vertex(v.info)))
                     frangia.push(v.info);
                 }
             }
         }
-        return t;
+        return edges;
     }
 
-
+    /**
+     * @param {T} start
+     * @returns {Array<Edge<T>>}
+     */
     DFS(start: T): Array<Edge<T>> {
         let ret = new Array<Edge<T>>();
         let visited = new Set<T>();
@@ -131,9 +157,9 @@ class Graph<T>{
         return ret;
     }
 
-    DFSUtil(u: T, ret: Array<Edge<T>>, visited: Set<T>) {
-        let verticiAdiacenti = this.getAdjacentVertices(u);
-        for (var v of verticiAdiacenti) {
+    private DFSUtil(u: T, ret: Array<Edge<T>>, visited: Set<T>) {
+        let adjacentVertices = this.getAdjacentVerticesUtil(u);
+        for (var v of adjacentVertices) {
             if (!visited.has(v.info)) {
                 visited.add(v.info);
                 ret.push(new Edge(new Vertex(u),new Vertex(v.info)));
@@ -142,7 +168,10 @@ class Graph<T>{
         }
     }
 
-    private getEdgesList() :Array<Edge<T>>{
+    /**
+     * @returns {Array<Edge<T>>}
+     */
+    private getEdges() :Array<Edge<T>>{
         let ret = new Array<Edge<T>>();
         for (let v of this.vertices.keys()) {
             let vertex = this.vertices.get(v);
@@ -164,10 +193,10 @@ class Graph<T>{
 
     kruskal() : Array<Edge<T>>{
         let ret=new Array<Edge<T>>();
-        let listaArchi = this.getEdgesList();
-        listaArchi.sort((a, b) => a.weight - b.weight);
+        let edges = this.getEdges();
+        edges.sort((a, b) => a.weight - b.weight);
         let qu = new QuickUnionRankCompression(this.vertices.size);
-        for (let a of listaArchi) {
+        for (let a of edges) {
             if (qu.find(a.u.info) != qu.find(a.v.info)) {   
                 qu.union(a.u.info, a.v.info);
                 ret.push(new Edge(new Vertex(a.u.info),new Vertex(a.v.info)));
@@ -204,7 +233,7 @@ class Graph<T>{
                 }
                 return s;
             }
-            for(let v of this.getAdjacentVertices(u)){
+            for(let v of this.getAdjacentVerticesUtil(u)){
                 let alt=dist.get(u) + v.weight;
                 if(alt < dist.get(v.info)){
                     dist.set(v.info,alt);
@@ -214,6 +243,10 @@ class Graph<T>{
         }
     }
 
+    /**
+     * @param {Array<T>} queue 
+     * @param {Map<T,number>} dist 
+     */
     private queueVertexWithMinDistance(queue: Array<T>,dist: Map<T,number>):T{
         let minDistance=dist.get(queue[0]);
         let minVertex: T=queue[0];
@@ -227,6 +260,11 @@ class Graph<T>{
         return minVertex;
     }
 
+    /**
+     * 
+     * @param {Array<T>} from 
+     * @param {any} dist 
+     */
     private getMinDistanceVertex(from: Array<T>,dist:any){
         let min=0;
         for(let v of from){
@@ -272,13 +310,13 @@ grafo.addEdge(2,3, false);
 grafo.addEdge(3,5, false);
 grafo.addEdge(2,4, false);
 
-grafo.addWeight(1,2,6);
-grafo.addWeight(1,4,1);
-grafo.addWeight(4,5,1);
-grafo.addWeight(2,5,2);
-grafo.addWeight(2,3,5);
-grafo.addWeight(3,5,5);
-grafo.addWeight(2,4,2);
+grafo.updateWeight(1,2,6);
+grafo.updateWeight(1,4,1);
+grafo.updateWeight(4,5,1);
+grafo.updateWeight(2,5,2);
+grafo.updateWeight(2,3,5);
+grafo.updateWeight(3,5,5);
+grafo.updateWeight(2,4,2);
 
 //grafo.removeEdge(7, 9);
 //grafo.removeEdge(5, 6);
