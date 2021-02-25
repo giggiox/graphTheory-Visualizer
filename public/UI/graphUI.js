@@ -9,12 +9,8 @@ class GraphUI {
             dx: null,
             dy: null
         }
-
-
         this.currentOperation = null;
         this.currentOperationConsecutiveClicks=null;
-
-
         this.isWeighted= false;
     }
 
@@ -38,6 +34,11 @@ class GraphUI {
             this.#addingEdgeUtil(vertexUI1,vertexUI2)
             i++;
         }
+    }
+
+    randomize(){
+        this.delete();
+        this.initRandomGraph();
     }
 
     addVertex(u = null, x = null, y = null) {
@@ -179,6 +180,7 @@ class GraphUI {
             this.currentOperation = null;
             if(currentOperation.constructor.name == operation.constructor.name) return;
         }
+        
         if(operation.consecutiveClicks){
             this.currentOperationConsecutiveClicks=operation;
         }else{
@@ -208,162 +210,5 @@ class GraphUI {
         this.edges.forEach(function(edgeUI){
             edgeUI.flags.highlighted=false;
         });
-    }
-
-
-}
-
-class BFSOperation{
-    constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
-        this.graphUI = null;
-        this.startingVertex = null;
-
-        this.canRender=false;
-    }
-
-    update(vertexUI){
-        if(this.startingVertex != null) return;
-        this.startingVertex=vertexUI;
-        vertexUI.flags.highlighted = true;
-        this.canRender = true;
-        //this.render();
-    }
-
-    render(){
-        if(!this.canRender) return;
-        this.graphUI.resetEdgesHighlight();
-        let edgeList=this.graphUI.graph.BFS(this.startingVertex.label);
-        this.graphUI.highlightEdgeList(edgeList);
-    }
-
-    end(){
-        this.graphUI.resetEdgesHighlight();
-        if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
-    }
-}
-
-class DFSOperation{
-    constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
-        this.graphUI = null;
-        this.startingVertex = null;
-
-        this.canRender=false;
-    }
-
-    update(vertexUI){
-        if(this.startingVertex != null) return;
-        this.startingVertex=vertexUI;
-        vertexUI.flags.highlighted = true;
-        this.canRender=true;
-    }
-
-    render(){
-        if(!this.canRender) return;
-        this.graphUI.resetEdgesHighlight();
-        let edgeList=this.graphUI.graph.DFS(this.startingVertex.label);
-        this.graphUI.highlightEdgeList(edgeList);
-    }
-
-    end(){
-        this.graphUI.resetEdgesHighlight();
-        if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
-    }
-}
-
-class AddEdgeOperation{
-    constructor(){
-        this.continuoslyRendered=false;
-        this.consecutiveClicks = true;
-        this.graphUI = null;
-        this.startingVertex = null;
-        this.done = false;
-    }
-
-    update(vertexUI){
-        if(this.done) return;
-        if(this.startingVertex == null){
-            this.startingVertex = vertexUI;
-            vertexUI.flags.clicked=true;
-        }else{
-            let edgeAdded = this.graphUI.graph.addEdge(this.startingVertex.label,vertexUI.label);
-            if(!edgeAdded){
-                vertexUI.blink();
-                if(vertexUI != this.startingVertex){
-                    vertexUI.flags.clicked= false;
-                }
-                return;
-            }
-            this.graphUI.edges.push(new EdgeUI(this.startingVertex, vertexUI,this.graphUI));
-            vertexUI.flags.clicked=false;
-            this.startingVertex.flags.clicked=false;
-            this.done=true;
-        }
-    }
-    end(){
-
-    }
-}
-
-
-class KruskalOperation{
-    constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
-        this.graphUI = null;
-    }
-
-    update(){
-    }
-    end(){
-        this.graphUI.resetEdgesHighlight();
-    }
-
-    render(){
-        this.graphUI.resetEdgesHighlight();
-        let visitedEdges = this.graphUI.graph.kruskal();
-        this.graphUI.highlightEdgeList(visitedEdges);
-    }
-}
-
-
-class DijkstraOperation{
-    constructor(){
-        this.continuoslyRendered=true;
-        this.consecutiveClicks = false;
-        this.graphUI = null;
-        this.startingVertex = null;
-        this.destinationVertex = null;
-        this.startHighlight = false;
-        this.done=false;
-    }
-
-    update(vertexUI){
-        if(this.startHighlight) return;
-        if(this.startingVertex == null){
-            this.startingVertex = vertexUI;
-            vertexUI.flags.highlighted=true;
-        }else{
-            this.destinationVertex = vertexUI;
-            vertexUI.flags.highlighted=true;
-            this.startHighlight=true;
-        }
-    }
-
-    render(){
-        if(!this.startHighlight || this.done) return;
-        this.graphUI.resetEdgesHighlight();
-        let visitedEdges = this.graphUI.graph.dijkstra(this.startingVertex.label,this.destinationVertex.label);
-        this.graphUI.highlightEdgeList(visitedEdges);
-    }
-    end(){
-        this.done=true;
-        this.graphUI.resetEdgesHighlight();
-        this.startingVertex.flags.highlighted=false;
-        this.destinationVertex.flags.highlighted=false;
-
     }
 }

@@ -85,7 +85,7 @@ $('#visualize-button').click(function(){
             console.log("no action to perform");
     }
 
-    $("#visualize-button").text("clear visualization");
+    $("#visualize-button").text("end visualization");
     $("#visualize-button").attr("class","btn btn-danger");
 });
 
@@ -109,4 +109,8 @@ $('#btn-add-edge').click(function(){
 
 $('#delete-graph').click(function(){
     graphUI.delete();
+})
+
+$('#randomize-graph').click(function(){
+    graphUI.randomize();
 })
