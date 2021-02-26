@@ -276,7 +276,10 @@ class Graph<T>{
     }
 
 
-    toString(): string {
+    /**
+     * @returns {string} -the adjacency list representation
+     */
+    adjacencyListRepresentation(): string {
         let t = "";
         for (var key of this.vertices.keys()) {
             t += key;
@@ -289,10 +292,8 @@ class Graph<T>{
             }
             t += "<br>";
         }
-
         return t;
     }
-
 }
 
 /*let grafo = new Graph<number>();

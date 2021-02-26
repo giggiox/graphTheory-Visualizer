@@ -132,21 +132,20 @@ class GraphUI {
      */
     visualizeOperation(operation){
         if(this.currentOperation != null){
-            let currentOperation= this.currentOperation;
+            let currentOperationName= this.currentOperation.constructor.name;
             this.currentOperation.endOperation();
             this.currentOperation = null;
-            if(currentOperation.constructor.name == operation.constructor.name) {
+            if(currentOperationName == operation.constructor.name) {
                 return false;
             }
         }
         this.currentOperation=operation;
-        operation.graphUI = this;
         return true;
     }
 
 
     /**
-     * graphUI elements that has to be rendered, this method is called by p5js draw() default function
+     * renders GraphUI elements that has to be rendered (vertices,edges,weights and operation), this method is called by p5js draw() default function
      */
     render() {
         this.#renderEdges();
@@ -160,30 +159,24 @@ class GraphUI {
 
     #renderEdges(){
         let referenceToThis = this;
-        this.edges.forEach(function (edge) {
+        this.edges.forEach(function(edgeUI) {
 
-            if (edge.isInside(mouseX, mouseY)) {
-                edge.flags.hover = true;
-            } else {
-                edge.flags.hover = false;
-            }
+	        edgeUI.flags.hover = edgeUI.hasInside(mouseX,mouseY);
             
             //constantly refresh weights
             if(referenceToThis.isWeighted){
-                referenceToThis.graph.updateWeight(edge.vertexUI1.label,edge.vertexUI2.label,edge.weight);
+                referenceToThis.graph.updateWeight(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label,edgeUI.weight);
             }
-            edge.render();
+
+            edgeUI.render();
         });
     }
 
+    
     #renderVertices(){
-        this.vertices.forEach(vertex => {
-            if (vertex.isInside(mouseX, mouseY)) {
-                vertex.flags.hover = true;
-            } else {
-                vertex.flags.hover = false;
-            }
-            vertex.render();
+        this.vertices.forEach(function(vertexUI){
+        vertexUI.flags.hover = vertexUI.hasInside(mouseX,mouseY);
+            vertexUI.render();
         });
     }
 

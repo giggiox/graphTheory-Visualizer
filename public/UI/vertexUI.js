@@ -28,7 +28,6 @@ class VertexUI {
         if (this.flags.dragging) {
             fill(100, 255, 255);
         }
-
         if (this.flags.clicked) {
             fill(255, 255, 0);
         }
@@ -36,9 +35,8 @@ class VertexUI {
             fill(255,0,0);
         }
         if(this.flags.highlighted){
-            fill(30, 144, 255);
+            fill(102, 102, 255);
         }
-
         ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
     }
 
@@ -55,7 +53,7 @@ class VertexUI {
      * @param {number} y 
      * @returns {boolean} -true if given (x,y) coordinates are inside VertexUI,false otherwise
      */
-    isInside(x, y) {
+    hasInside(x, y) {
         let distance = dist(this.x, this.y, x, y);
         return distance <= this.radius; 
     }

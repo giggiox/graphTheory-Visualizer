@@ -340,7 +340,10 @@ var Graph = /** @class */ (function () {
         }
         return min;
     };
-    Graph.prototype.toString = function () {
+    /**
+     * @returns {string} -the adjacency list representation
+     */
+    Graph.prototype.adjacencyListRepresentation = function () {
         var e_8, _a;
         var t = "";
         try {

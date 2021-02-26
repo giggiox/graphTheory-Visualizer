@@ -22,11 +22,9 @@ class EdgeUI {
             stroke(30, 144, 255);
             strokeWeight(4);
         }
-
         if (this.flags.dragging) {
             fill(100, 255, 255);
         }
-
         if (this.graphUI.isWeighted) {
             let d = int(dist(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y)) /20;
             this.weight = d;
@@ -50,7 +48,7 @@ class EdgeUI {
      * @param {number} y 
      * @returns {boolean} -true if given (x,y) coordinates are inside EdgeUI line,false otherwise
      */
-    isInside(x, y) {
+    hasInside(x, y) {
         let distanceFromVertexUI1 = dist(this.vertexUI1.x, this.vertexUI1.y, x, y);
         let distanceFromVertexUI2 = dist(this.vertexUI2.x, this.vertexUI2.y, x, y);
         if (distanceFromVertexUI1 <= this.vertexUI1.radius || distanceFromVertexUI2 <= this.vertexUI2.radius)

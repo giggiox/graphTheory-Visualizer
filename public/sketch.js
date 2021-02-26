@@ -18,7 +18,7 @@ function draw() {
     background(255);
     graphUI.render();
     
-    let reprString=graphUI.graph.toString();
+    let reprString=graphUI.graph.adjacencyListRepresentation();
     $("#graph-representation").html(reprString);
 }
 
@@ -147,11 +147,10 @@ $("#representation-button").click(function() {
     if(graphRepresentationToggle){
         //since there is no dropdown('untoggle'), removethe data-toggle attribute will do the work.
         $("#representation-button").attr("data-toggle","dropdown"); 
-        toggle=false;
+        graphRepresentationToggle=false;
     }else{
         $("#representation-button").attr("data-toggle","");
         $("#representation-button").dropdown('toggle');
-        toggle=true;
+        graphRepresentationToggle=true;
     }
-    
-})
+});
