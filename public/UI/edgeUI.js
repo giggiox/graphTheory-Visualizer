@@ -37,10 +37,8 @@ class EdgeUI {
             fill(0, 102, 153, 51);
             pop();
         }
-
         line(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y);
     }
-
 
     /**
      * 
