@@ -217,6 +217,14 @@ class GraphUI {
      * this method is called p5js mouseDragged default function
      */
     mouseDraggedAction() {
+        for (let i = 0; i < this.vertices.length; i++) {
+            let vertexUI = this.vertices[i];
+            if (vertexUI.hasInside(mouseX,mouseY)) {
+                vertexUI.flags.dragging = true;
+                this.draggedVertex.vertex = vertexUI;
+                break;
+            }
+        }
         if (!this.draggedVertex.vertex)
             return;
         this.draggedVertex.vertex.x = mouseX - this.draggedVertex.dx;

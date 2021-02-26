@@ -17,7 +17,6 @@ function windowResized() {
 function draw() {
     background(255);
     graphUI.render();
-    
     let reprString=graphUI.graph.adjacencyListRepresentation();
     $("#graph-representation").html(reprString);
 }
