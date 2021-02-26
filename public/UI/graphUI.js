@@ -42,7 +42,7 @@ class GraphUI {
         while(i<random(rnd,rnd+8)){
             let vertexUI1=this.vertices[Math.floor(Math.random() * this.vertices.length)]
             let vertexUI2=this.vertices[Math.floor(Math.random() * this.vertices.length)]
-            this.#addingEdgeUtil(vertexUI1,vertexUI2);
+            this.addingEdgeUtil(vertexUI1,vertexUI2);
             i++;
         }
     }
@@ -88,12 +88,12 @@ class GraphUI {
      * which, if 2 vertices are clicked (and the second is valid, @see #addingEdgeUtil(VertexUI,VertexUI)) adds them to the graphUI 
      * @param {VertexUI} vertexUI - vertex clicked in UI 
      */
-    #updateVertexClickedForAddingEdge(vertexUI){
+    updateVertexClickedForAddingEdge(vertexUI){
         if(this.addingEdge.startingVertex == null){
             this.addingEdge.startingVertex = vertexUI;
             vertexUI.flags.clicked=true;
         }else{
-            if(!this.#addingEdgeUtil(this.addingEdge.startingVertex,vertexUI)){
+            if(!this.addingEdgeUtil(this.addingEdge.startingVertex,vertexUI)){
                 vertexUI.blink(4);
                 if(vertexUI != this.startingVertex){
                     vertexUI.flags.clicked= false;
@@ -115,7 +115,7 @@ class GraphUI {
      * @param {VertexUI} vertexUI2
      * @returns {boolean} - true if edge is added, false otherwise 
      */
-    #addingEdgeUtil(vertexUI1,vertexUI2){
+    addingEdgeUtil(vertexUI1,vertexUI2){
         let edgeAdded = this.graph.addEdge(vertexUI1.label,vertexUI2.label);
         if(!edgeAdded){
             return false;
@@ -148,8 +148,8 @@ class GraphUI {
      * renders GraphUI elements that has to be rendered (vertices,edges,weights and operation), this method is called by p5js draw() default function
      */
     render() {
-        this.#renderEdges();
-        this.#renderVertices();
+        this.renderEdges();
+        this.renderVertices();
 
         if(this.currentOperation != null){
             this.currentOperation.render();
@@ -157,7 +157,7 @@ class GraphUI {
     }
 
 
-    #renderEdges(){
+    renderEdges(){
         let referenceToThis = this;
         this.edges.forEach(function(edgeUI) {
 
@@ -173,7 +173,7 @@ class GraphUI {
     }
 
     
-    #renderVertices(){
+    renderVertices(){
         this.vertices.forEach(function(vertexUI){
         vertexUI.flags.hover = vertexUI.hasInside(mouseX,mouseY);
             vertexUI.render();
@@ -194,7 +194,7 @@ class GraphUI {
                 }
                 /*send an update message to clicked vertex for adding edge*/
                 if(this.addingEdge.enabled){
-                    this.#updateVertexClickedForAddingEdge(vertexUI);
+                    this.updateVertexClickedForAddingEdge(vertexUI);
                 }
                 vertexUI.flags.dragging = true;
                 this.draggedVertex.vertex = vertexUI;
