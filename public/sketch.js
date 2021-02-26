@@ -22,7 +22,7 @@ function draw() {
     $("#graph-representation").html(reprString);
 }
 
-function mousePressed(){
+function touchStarted(){
     graphUI.mousePressedAction();
 }
 
