@@ -55,7 +55,6 @@ $('#DIJKSTRA').hover(function(){
     }
 })
 
-
 let endVisualization=false;
 let previousText;
 $('.algorithms').click(function(){
