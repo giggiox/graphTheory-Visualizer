@@ -26,11 +26,11 @@ function touchStarted(){
     graphUI.mousePressedAction();
 }
 
-function mouseDragged(){
+function touchMoved(){
     graphUI.mouseDraggedAction();
 }
 
-function mouseReleased(){
+function touchEnded(){
     graphUI.mouseReleasedAction();
 }
 
