@@ -219,13 +219,13 @@ class GraphUI {
     mouseDraggedAction() {
         for (let i = 0; i < this.vertices.length; i++) {
             let vertexUI = this.vertices[i];
-            if (vertexUI.hasInside(mouseX,mouseY)) {
+            if (vertexUI.flags.hover) {
                 vertexUI.flags.dragging = true;
                 this.draggedVertex.vertex = vertexUI;
                 break;
             }
         }
-        if (!this.draggedVertex.vertex)
+        if (this.draggedVertex.vertex == null)
             return;
         this.draggedVertex.vertex.x = mouseX - this.draggedVertex.dx;
         this.draggedVertex.vertex.y = mouseY - this.draggedVertex.dy;
