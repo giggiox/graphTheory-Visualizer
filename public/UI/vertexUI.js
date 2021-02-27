@@ -65,13 +65,13 @@ class VertexUI {
         repetitions=repetitions % 2 != 0 ? repetitions+1: repetitions;
         let referenceToThis=this;
         let blinkedTimes=0;
-        this.flags.invalid=!ref.flags.invalid;
+        this.flags.invalid=!this.flags.invalid;
         let intervalID=window.setInterval(function(){
             if(blinkedTimes == repetitions){
                 window.clearInterval(intervalID);
             }
-            referenceToThis.flags.invalid=!ref.flags.invalid;
-            t++;
+            referenceToThis.flags.invalid=!referenceToThis.flags.invalid;
+            blinkedTimes++;
         },400,repetitions);
     }
 }

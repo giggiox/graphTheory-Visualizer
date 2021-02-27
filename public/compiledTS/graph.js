@@ -13,39 +13,32 @@ var __values = (this && this.__values) || function(o) {
 var Graph = /** @class */ (function () {
     function Graph(vertici) {
         this.isWeighted = false;
+        this.isDirected = false;
         this.vertices = vertici || new Map();
     }
-    /**
-     * add a vertex to Map structure which represents vertices
-     * @param {T} vertex
-     */
-    Graph.prototype.addVertex = function (vertex) {
-        this.vertices.set(vertex, new Vertex());
+    Graph.prototype.addVertex = function (vertice) {
+        this.vertices.set(vertice, new Vertex());
     };
-    /**
-     * add and edge to graph, returns true if edge is added (edge doesn't exist already or not a self loop), false otherwise
-     * @see edgeExistsUtil(T,T) for edge existance checking
-     * @param {T} a -Vertex info
-     * @param {T} b -Vertex info
-     * @returns {boolean} -return true if edge is added with success, false otherwise
-     */
+    /*
+    * add an ege, returns true if the edge is added (edge doesn't exists already or not a self loop), false otherwise
+    */
     Graph.prototype.addEdge = function (a, b) {
-        if (this.edgeExistsUtil(a, b))
+        if (this.edgeExists(a, b))
             return false;
         var a1 = this.vertices.get(a);
         var adda = new Vertex(b, a1);
         this.vertices.set(a, adda);
+        if (this.isDirected)
+            return true;
         var b1 = this.vertices.get(b);
         var addb = new Vertex(a, b1);
         this.vertices.set(b, addb);
         return true;
     };
-    /**
-     * return wether the edges already exists or not
-     * @param {T} a -Vertex info
-     * @param {T} b -Vertex info
-     */
-    Graph.prototype.edgeExistsUtil = function (a, b) {
+    /*
+    *   return true if edge already exists, or if it is a self loop.
+    */
+    Graph.prototype.edgeExists = function (a, b) {
         if (a == b) {
             return true;
         }
@@ -58,11 +51,7 @@ var Graph = /** @class */ (function () {
         }
         return false;
     };
-    /**
-     * @param {T} v
-     * @returns {Array<Vertex<T>>}
-     */
-    Graph.prototype.getAdjacentVerticesUtil = function (v) {
+    Graph.prototype.getAdjacentVertices = function (v) {
         var vertice = this.vertices.get(v);
         var retList = new Array();
         while (vertice.next != null) {
@@ -71,13 +60,7 @@ var Graph = /** @class */ (function () {
         }
         return retList;
     };
-    /**
-     * removed edge from 2 vertices
-     * @param {T} u
-     * @param {T} v
-     */
-    Graph.prototype.removeEdge = function (u, v) {
-        /*remove edge from u adjacency list*/
+    Graph.prototype.removeEdgeForChanges = function (u, v) {
         var verticeA = this.vertices.get(u);
         var previousA = verticeA;
         if (verticeA.info == v) {
@@ -88,7 +71,8 @@ var Graph = /** @class */ (function () {
             verticeA = verticeA.next;
         }
         previousA.next = verticeA.next;
-        /*remove edge from v adjacency list*/
+        if (!this.isDirected)
+            return;
         var verticeB = this.vertices.get(v);
         var previousB = verticeB;
         if (previousB.info == u) {
@@ -100,12 +84,30 @@ var Graph = /** @class */ (function () {
         }
         previousB.next = verticeB.next;
     };
-    /**
-     * updates weight of a given edge
-     * @param {T} u
-     * @param {T} v
-     * @param weight
-     */
+    Graph.prototype.removeEdge = function (u, v) {
+        var verticeA = this.vertices.get(u);
+        var previousA = verticeA;
+        if (verticeA.info == v) {
+            this.vertices.set(u, verticeA.next);
+        }
+        while (verticeA.next != null && verticeA.info != v) {
+            previousA = verticeA;
+            verticeA = verticeA.next;
+        }
+        previousA.next = verticeA.next;
+        if (this.isDirected)
+            return;
+        var verticeB = this.vertices.get(v);
+        var previousB = verticeB;
+        if (previousB.info == u) {
+            this.vertices.set(v, verticeB.next);
+        }
+        while (verticeB.next != null && verticeB.info != u) {
+            previousB = verticeB;
+            verticeB = verticeB.next;
+        }
+        previousB.next = verticeB.next;
+    };
     Graph.prototype.updateWeight = function (u, v, weight) {
         var a1 = this.vertices.get(u);
         while (a1.next != null && a1.info != v) {
@@ -118,26 +120,22 @@ var Graph = /** @class */ (function () {
         }
         b1.weight = weight;
     };
-    /**
-     * @param {T} start
-     * @returns {Array<Edge<T>>}
-     */
     Graph.prototype.BFS = function (start) {
         var e_1, _a;
-        var edges = new Array();
+        var t = new Array();
         var visited = new Set();
         visited.add(start);
-        var frangia = [];
+        var frangia = []; // per BFS frangia usata come coda;
         frangia.push(start);
         while (frangia.length != 0) {
             var u = frangia.shift();
-            var adjacentVertices = this.getAdjacentVerticesUtil(u);
+            var verticiAdiacenti = this.getAdjacentVertices(u);
             try {
-                for (var adjacentVertices_1 = (e_1 = void 0, __values(adjacentVertices)), adjacentVertices_1_1 = adjacentVertices_1.next(); !adjacentVertices_1_1.done; adjacentVertices_1_1 = adjacentVertices_1.next()) {
-                    var v = adjacentVertices_1_1.value;
+                for (var verticiAdiacenti_1 = (e_1 = void 0, __values(verticiAdiacenti)), verticiAdiacenti_1_1 = verticiAdiacenti_1.next(); !verticiAdiacenti_1_1.done; verticiAdiacenti_1_1 = verticiAdiacenti_1.next()) {
+                    var v = verticiAdiacenti_1_1.value;
                     if (!visited.has(v.info)) {
                         visited.add(v.info);
-                        edges.push(new Edge(new Vertex(u), new Vertex(v.info)));
+                        t.push(new Edge(new Vertex(u), new Vertex(v.info)));
                         frangia.push(v.info);
                     }
                 }
@@ -145,17 +143,13 @@ var Graph = /** @class */ (function () {
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (adjacentVertices_1_1 && !adjacentVertices_1_1.done && (_a = adjacentVertices_1.return)) _a.call(adjacentVertices_1);
+                    if (verticiAdiacenti_1_1 && !verticiAdiacenti_1_1.done && (_a = verticiAdiacenti_1.return)) _a.call(verticiAdiacenti_1);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
         }
-        return edges;
+        return t;
     };
-    /**
-     * @param {T} start
-     * @returns {Array<Edge<T>>}
-     */
     Graph.prototype.DFS = function (start) {
         var ret = new Array();
         var visited = new Set();
@@ -165,10 +159,10 @@ var Graph = /** @class */ (function () {
     };
     Graph.prototype.DFSUtil = function (u, ret, visited) {
         var e_2, _a;
-        var adjacentVertices = this.getAdjacentVerticesUtil(u);
+        var verticiAdiacenti = this.getAdjacentVertices(u);
         try {
-            for (var adjacentVertices_2 = __values(adjacentVertices), adjacentVertices_2_1 = adjacentVertices_2.next(); !adjacentVertices_2_1.done; adjacentVertices_2_1 = adjacentVertices_2.next()) {
-                var v = adjacentVertices_2_1.value;
+            for (var verticiAdiacenti_2 = __values(verticiAdiacenti), verticiAdiacenti_2_1 = verticiAdiacenti_2.next(); !verticiAdiacenti_2_1.done; verticiAdiacenti_2_1 = verticiAdiacenti_2.next()) {
+                var v = verticiAdiacenti_2_1.value;
                 if (!visited.has(v.info)) {
                     visited.add(v.info);
                     ret.push(new Edge(new Vertex(u), new Vertex(v.info)));
@@ -179,15 +173,12 @@ var Graph = /** @class */ (function () {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (adjacentVertices_2_1 && !adjacentVertices_2_1.done && (_a = adjacentVertices_2.return)) _a.call(adjacentVertices_2);
+                if (verticiAdiacenti_2_1 && !verticiAdiacenti_2_1.done && (_a = verticiAdiacenti_2.return)) _a.call(verticiAdiacenti_2);
             }
             finally { if (e_2) throw e_2.error; }
         }
     };
-    /**
-     * @returns {Array<Edge<T>>}
-     */
-    Graph.prototype.getEdges = function () {
+    Graph.prototype.getEdgesList = function () {
         var e_3, _a;
         var ret = new Array();
         try {
@@ -223,12 +214,12 @@ var Graph = /** @class */ (function () {
     Graph.prototype.kruskal = function () {
         var e_4, _a;
         var ret = new Array();
-        var edges = this.getEdges();
-        edges.sort(function (a, b) { return a.weight - b.weight; });
+        var listaArchi = this.getEdgesList();
+        listaArchi.sort(function (a, b) { return a.weight - b.weight; });
         var qu = new QuickUnionRankCompression(this.vertices.size);
         try {
-            for (var edges_1 = __values(edges), edges_1_1 = edges_1.next(); !edges_1_1.done; edges_1_1 = edges_1.next()) {
-                var a = edges_1_1.value;
+            for (var listaArchi_1 = __values(listaArchi), listaArchi_1_1 = listaArchi_1.next(); !listaArchi_1_1.done; listaArchi_1_1 = listaArchi_1.next()) {
+                var a = listaArchi_1_1.value;
                 if (qu.find(a.u.info) != qu.find(a.v.info)) {
                     qu.union(a.u.info, a.v.info);
                     ret.push(new Edge(new Vertex(a.u.info), new Vertex(a.v.info)));
@@ -238,7 +229,7 @@ var Graph = /** @class */ (function () {
         catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
-                if (edges_1_1 && !edges_1_1.done && (_a = edges_1.return)) _a.call(edges_1);
+                if (listaArchi_1_1 && !listaArchi_1_1.done && (_a = listaArchi_1.return)) _a.call(listaArchi_1);
             }
             finally { if (e_4) throw e_4.error; }
         }
@@ -281,7 +272,7 @@ var Graph = /** @class */ (function () {
                 return s;
             }
             try {
-                for (var _e = (e_6 = void 0, __values(this.getAdjacentVerticesUtil(u))), _f = _e.next(); !_f.done; _f = _e.next()) {
+                for (var _e = (e_6 = void 0, __values(this.getAdjacentVertices(u))), _f = _e.next(); !_f.done; _f = _e.next()) {
                     var v = _f.value;
                     var alt = dist.get(u) + v.weight;
                     if (alt < dist.get(v.info)) {
@@ -299,10 +290,6 @@ var Graph = /** @class */ (function () {
             }
         }
     };
-    /**
-     * @param {Array<T>} queue
-     * @param {Map<T,number>} dist
-     */
     Graph.prototype.queueVertexWithMinDistance = function (queue, dist) {
         var minDistance = dist.get(queue[0]);
         var minVertex = queue[0];
@@ -315,11 +302,6 @@ var Graph = /** @class */ (function () {
         }
         return minVertex;
     };
-    /**
-     *
-     * @param {Array<T>} from
-     * @param {any} dist
-     */
     Graph.prototype.getMinDistanceVertex = function (from, dist) {
         var e_7, _a;
         var min = 0;
@@ -340,9 +322,6 @@ var Graph = /** @class */ (function () {
         }
         return min;
     };
-    /**
-     * @returns {string} -the adjacency list representation
-     */
     Graph.prototype.adjacencyListRepresentation = function () {
         var e_8, _a;
         var t = "";
@@ -354,7 +333,7 @@ var Graph = /** @class */ (function () {
                 while (vertex.next != null) {
                     t += "->" + vertex.info;
                     if (this.isWeighted)
-                        t += "," + Math.round(vertex.weight);
+                        t += "," + vertex.weight;
                     vertex = vertex.next;
                 }
                 t += "<br>";
@@ -371,41 +350,26 @@ var Graph = /** @class */ (function () {
     };
     return Graph;
 }());
-/*let grafo = new Graph<number>();
-grafo.addVertex(1);
-grafo.addVertex(2);
-grafo.addVertex(3);
-grafo.addVertex(4);
+/*
+let grafo = new Graph<number>();
 grafo.addVertex(5);
+grafo.addVertex(6);
+grafo.addVertex(7);
+grafo.addVertex(8);
+grafo.addVertex(9);
 
-grafo.addEdge(1, 2, false);
-grafo.addEdge(1, 4, false);
-grafo.addEdge(4,5, false);
-grafo.addEdge(2,5, false);
-grafo.addEdge(2,3, false);
-grafo.addEdge(3,5, false);
-grafo.addEdge(2,4, false);
+grafo.addEdge(5, 6, false);
+grafo.addEdge(6, 7, false);
+grafo.addEdge(6, 8, false);
+grafo.addEdge(7, 9, false);
 
-grafo.updateWeight(1,2,6);
-grafo.updateWeight(1,4,1);
-grafo.updateWeight(4,5,1);
-grafo.updateWeight(2,5,2);
-grafo.updateWeight(2,3,5);
-grafo.updateWeight(3,5,5);
-grafo.updateWeight(2,4,2);
 
 //grafo.removeEdge(7, 9);
 //grafo.removeEdge(5, 6);
 
 console.log(grafo.toString());
 
-/*console.log(grafo.BFS(8));
+console.log(grafo.BFS(8));
 console.log(grafo.DFS(8));
-*/
-//console.log(grafo.getVerticiAdiacenti(1));*/
-/*console.log(grafo.BFS(1));
 
-console.log("dijkstra");
-let ret=grafo.dijkstra(1,3);
-console.log(ret);
-*/ 
+//console.log(grafo.getVerticiAdiacenti(1));*/

@@ -37,6 +37,16 @@ class EdgeUI {
             fill(0, 102, 153, 51);
             pop();
         }
+        if(this.graphUI.isDirected){
+            push();
+            var angle = atan2(this.vertexUI1.y - this.vertexUI2.y, this.vertexUI1.x - this.vertexUI2.x);            translate(this.vertexUI2.x+(this.vertexUI2.radius*cos(angle)),
+                                                this.vertexUI2.y+(this.vertexUI2.radius*sin(angle)));
+            rotate(angle-HALF_PI);
+            fill(0);
+            triangle(-12*0.5, 12, 12*0.5, 12, 0, 0);
+            pop();
+        }
+
         line(this.vertexUI1.x, this.vertexUI1.y, this.vertexUI2.x, this.vertexUI2.y);
     }
 

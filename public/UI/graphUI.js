@@ -14,6 +14,7 @@ class GraphUI {
             startingVertex:null
         }
         this.isWeighted= false;
+        this.isDirected = false;
     }
 
     /**
@@ -60,6 +61,25 @@ class GraphUI {
         this.graph.isWeighted = this.isWeighted;
     }
 
+    setDirected(){
+        this.isDirected=!this.isDirected;
+        this.graph.isDirected = this.isDirected;
+
+        /*let referenceToThis=this;
+        this.edges.forEach(function(edgeUI){
+            referenceToThis.graph.removeEdge(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
+            let added=referenceToThis.graph.addEdge(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
+            if(!added) this.edges.splice()
+        });*/
+        for(let i=0;i<this.edges.length;i++){
+            let edgeUI=this.edges[i];
+            this.graph.removeEdgeForChanges(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
+            let added=this.graph.addEdge(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
+            if(!added){
+                this.edges.splice(i,1);
+            } 
+        }
+    }
     /**
      * @param {any} label -label of created vertex 
      * @param {number} x -x spawn coordinate
