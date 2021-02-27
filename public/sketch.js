@@ -67,6 +67,10 @@ $('#graph-weighted-checkbox').click(function(){
     graphUI.setWeighted();
 })
 
+$('#graph-directed-checkbox').click(function(){
+    graphUI.setDirected();
+})
+
 
 $('#visualize-button').click(function(){
     let perform_id=$('#visualize-button').data('perform_id');

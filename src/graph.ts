@@ -2,6 +2,7 @@ class Graph<T>{
 
     vertices: Map<T, Vertex<T>>;
     isWeighted: boolean = false;
+    isDirected: boolean = false;
 
     constructor(vertici?: Map<T, Vertex<T>>) {
         this.vertices = vertici || new Map<T, Vertex<T>>();
@@ -15,14 +16,14 @@ class Graph<T>{
     /*
     * add an ege, returns true if the edge is added (edge doesn't exists already or not a self loop), false otherwise
     */
-    addEdge(a: T, b: T, directed: boolean): boolean {
+    addEdge(a: T, b: T): boolean {
         if(this.edgeExists(a,b))
             return false;
         let a1 = this.vertices.get(a);
         let adda = new Vertex<T>(b, a1);
         this.vertices.set(a, adda);
 
-        if (directed) return true;
+        if (this.isDirected) return true;
         let b1 = this.vertices.get(b);
         let addb = new Vertex<T>(a, b1);
         this.vertices.set(b, addb);
@@ -46,6 +47,7 @@ class Graph<T>{
         return false;
     }
 
+
     private getAdjacentVertices(v: T): Array<Vertex<T>> {
         let vertice = this.vertices.get(v);
         let retList = new Array<Vertex<T>>();
@@ -55,10 +57,6 @@ class Graph<T>{
         }
         return retList;
 
-    }
-
-    getVertexDegree(v: T): number {
-        return this.getAdjacentVertices(v).length;
     }
 
 
@@ -72,10 +70,9 @@ class Graph<T>{
             previousA = verticeA;
             verticeA = verticeA.next;
         }
-
         previousA.next = verticeA.next;
 
-        //lo rimuovo da entrambe le liste di adiacenza
+        if(!this.isDirected) return;
         let verticeB = this.vertices.get(v);
         let previousB = verticeB;
         if (previousB.info == u) {
@@ -88,7 +85,7 @@ class Graph<T>{
         previousB.next = verticeB.next;
     }
 
-    addWeight(u:T,v:T,weight: number){
+    updateWeight(u:T,v:T,weight: number){
         let a1=this.vertices.get(u);
         while (a1.next != null && a1.info != v) {
             a1 = a1.next;
@@ -177,7 +174,7 @@ class Graph<T>{
     }
 
 
-    toString(): string {
+    adjacencyListRepresentation(): string {
         let t = "";
         for (var key of this.vertices.keys()) {
             t += key;
@@ -188,7 +185,7 @@ class Graph<T>{
                     t+=","+vertex.weight;
                 vertex = vertex.next;
             }
-            t += "\n";
+            t += "<br>";
         }
 
         return t;
