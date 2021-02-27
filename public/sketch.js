@@ -35,9 +35,6 @@ function touchEnded(){
 
 $(function(){
     $('#visualize-button').data('perform_id',"BFS");
-    $('#one-vertex-select-tip').hide();
-    $('#two-vertices-select-tip').hide();
-
 });
 $('#KRUSKAL').hover(function(){
     if(!$('#graph-weighted-checkbox').prop('checked')){
