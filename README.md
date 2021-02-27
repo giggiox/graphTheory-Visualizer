@@ -8,11 +8,14 @@ You can access it here: https://giggiox.github.io/graphTheory-Visualizer/  <br/>
 example of BFS:
 ![](bfs.gif)
 
+&NewLine;
 dijkstra shortest path between 2 vertices:
 ![](dijkstra.gif)
 
+&NewLine;
 interface:
 ![](interface.PNG)
 
+&NewLine;
 Project made using [p5js](https://p5js.org/) and [TypeScript](https://www.typescriptlang.org/).
 
