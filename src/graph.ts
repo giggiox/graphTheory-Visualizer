@@ -60,7 +60,7 @@ class Graph<T>{
     }
 
 
-    removeEdge(u: T, v: T): void {
+    removeEdgeForChanges(u: T, v: T): void {
         let verticeA = this.vertices.get(u);
         let previousA = verticeA;
         if (verticeA.info == v) {
@@ -73,6 +73,32 @@ class Graph<T>{
         previousA.next = verticeA.next;
 
         if(!this.isDirected) return;
+        let verticeB = this.vertices.get(v);
+        let previousB = verticeB;
+        if (previousB.info == u) {
+            this.vertices.set(v, verticeB.next);
+        }
+        while (verticeB.next != null && verticeB.info != u) {
+            previousB = verticeB;
+            verticeB = verticeB.next;
+        }
+        previousB.next = verticeB.next;
+    }
+
+
+    removeEdge(u: T, v: T): void {
+        let verticeA = this.vertices.get(u);
+        let previousA = verticeA;
+        if (verticeA.info == v) {
+            this.vertices.set(u, verticeA.next);
+        }
+        while (verticeA.next != null && verticeA.info != v) {
+            previousA = verticeA;
+            verticeA = verticeA.next;
+        }
+        previousA.next = verticeA.next;
+
+        if(this.isDirected) return;
         let verticeB = this.vertices.get(v);
         let previousB = verticeB;
         if (previousB.info == u) {
@@ -172,6 +198,67 @@ class Graph<T>{
         }
         return ret;
     }
+
+    dijkstra(start:T,end:T):Array<Edge<T>>{
+        let dist = new Map<T,number>();
+        let previous = new Map<T,T>();
+        let Q=new Array<T>();
+        for(let v of this.vertices.keys()){
+            dist.set(v,Infinity);
+            previous.set(v,undefined);
+            Q.push(v);
+        }
+        dist.set(start,0);
+
+        while(Q.length!= 0){
+            let u: T= this.queueVertexWithMinDistance(Q,dist);
+            Q.splice(Q.indexOf(u,0),1);
+            if(dist.get(u) == Infinity){
+                break;
+            }
+
+            if(u == end){
+                let s=new  Array<Edge<T>>();
+                let u = end;
+                while(previous.get(u) != undefined){
+                    s.push(new Edge(new Vertex(u),new Vertex(previous.get(u))));
+                    u=previous.get(u);
+                }
+                return s;
+            }
+            for(let v of this.getAdjacentVertices(u)){
+                let alt=dist.get(u) + v.weight;
+                if(alt < dist.get(v.info)){
+                    dist.set(v.info,alt);
+                    previous.set(v.info,u);
+                }
+            }
+        }
+    }
+
+    private queueVertexWithMinDistance(queue: Array<T>,dist: Map<T,number>):T{
+        let minDistance=dist.get(queue[0]);
+        let minVertex: T=queue[0];
+        for(let i=1;i<queue.length;i++){
+            let distanceValue=dist.get(queue[i]);
+            if(distanceValue < minDistance){
+                minDistance=distanceValue;
+                minVertex=queue[i];
+            }
+        }
+        return minVertex;
+    }
+
+    private getMinDistanceVertex(from: Array<T>,dist:any){
+        let min=0;
+        for(let v of from){
+            if(dist[v]<min){
+                min=Number(v);
+            }
+        }
+        return min;
+    }
+
 
 
     adjacencyListRepresentation(): string {

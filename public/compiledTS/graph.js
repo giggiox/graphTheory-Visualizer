@@ -60,7 +60,7 @@ var Graph = /** @class */ (function () {
         }
         return retList;
     };
-    Graph.prototype.removeEdge = function (u, v) {
+    Graph.prototype.removeEdgeForChanges = function (u, v) {
         var verticeA = this.vertices.get(u);
         var previousA = verticeA;
         if (verticeA.info == v) {
@@ -72,6 +72,30 @@ var Graph = /** @class */ (function () {
         }
         previousA.next = verticeA.next;
         if (!this.isDirected)
+            return;
+        var verticeB = this.vertices.get(v);
+        var previousB = verticeB;
+        if (previousB.info == u) {
+            this.vertices.set(v, verticeB.next);
+        }
+        while (verticeB.next != null && verticeB.info != u) {
+            previousB = verticeB;
+            verticeB = verticeB.next;
+        }
+        previousB.next = verticeB.next;
+    };
+    Graph.prototype.removeEdge = function (u, v) {
+        var verticeA = this.vertices.get(u);
+        var previousA = verticeA;
+        if (verticeA.info == v) {
+            this.vertices.set(u, verticeA.next);
+        }
+        while (verticeA.next != null && verticeA.info != v) {
+            previousA = verticeA;
+            verticeA = verticeA.next;
+        }
+        previousA.next = verticeA.next;
+        if (this.isDirected)
             return;
         var verticeB = this.vertices.get(v);
         var previousB = verticeB;
@@ -211,8 +235,95 @@ var Graph = /** @class */ (function () {
         }
         return ret;
     };
+    Graph.prototype.dijkstra = function (start, end) {
+        var e_5, _a, e_6, _b;
+        var dist = new Map();
+        var previous = new Map();
+        var Q = new Array();
+        try {
+            for (var _c = __values(this.vertices.keys()), _d = _c.next(); !_d.done; _d = _c.next()) {
+                var v = _d.value;
+                dist.set(v, Infinity);
+                previous.set(v, undefined);
+                Q.push(v);
+            }
+        }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+            }
+            finally { if (e_5) throw e_5.error; }
+        }
+        dist.set(start, 0);
+        while (Q.length != 0) {
+            var u = this.queueVertexWithMinDistance(Q, dist);
+            Q.splice(Q.indexOf(u, 0), 1);
+            if (dist.get(u) == Infinity) {
+                break;
+            }
+            if (u == end) {
+                var s = new Array();
+                var u_1 = end;
+                while (previous.get(u_1) != undefined) {
+                    s.push(new Edge(new Vertex(u_1), new Vertex(previous.get(u_1))));
+                    u_1 = previous.get(u_1);
+                }
+                return s;
+            }
+            try {
+                for (var _e = (e_6 = void 0, __values(this.getAdjacentVertices(u))), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var v = _f.value;
+                    var alt = dist.get(u) + v.weight;
+                    if (alt < dist.get(v.info)) {
+                        dist.set(v.info, alt);
+                        previous.set(v.info, u);
+                    }
+                }
+            }
+            catch (e_6_1) { e_6 = { error: e_6_1 }; }
+            finally {
+                try {
+                    if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                }
+                finally { if (e_6) throw e_6.error; }
+            }
+        }
+    };
+    Graph.prototype.queueVertexWithMinDistance = function (queue, dist) {
+        var minDistance = dist.get(queue[0]);
+        var minVertex = queue[0];
+        for (var i = 1; i < queue.length; i++) {
+            var distanceValue = dist.get(queue[i]);
+            if (distanceValue < minDistance) {
+                minDistance = distanceValue;
+                minVertex = queue[i];
+            }
+        }
+        return minVertex;
+    };
+    Graph.prototype.getMinDistanceVertex = function (from, dist) {
+        var e_7, _a;
+        var min = 0;
+        try {
+            for (var from_1 = __values(from), from_1_1 = from_1.next(); !from_1_1.done; from_1_1 = from_1.next()) {
+                var v = from_1_1.value;
+                if (dist[v] < min) {
+                    min = Number(v);
+                }
+            }
+        }
+        catch (e_7_1) { e_7 = { error: e_7_1 }; }
+        finally {
+            try {
+                if (from_1_1 && !from_1_1.done && (_a = from_1.return)) _a.call(from_1);
+            }
+            finally { if (e_7) throw e_7.error; }
+        }
+        return min;
+    };
     Graph.prototype.adjacencyListRepresentation = function () {
-        var e_5, _a;
+        var e_8, _a;
         var t = "";
         try {
             for (var _b = __values(this.vertices.keys()), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -228,12 +339,12 @@ var Graph = /** @class */ (function () {
                 t += "<br>";
             }
         }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        catch (e_8_1) { e_8 = { error: e_8_1 }; }
         finally {
             try {
                 if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
-            finally { if (e_5) throw e_5.error; }
+            finally { if (e_8) throw e_8.error; }
         }
         return t;
     };

@@ -22,9 +22,9 @@ class DijkstraOperation extends Operation{
     render(){
         if(!this.canRender || this.done) return;
         super.clearEdgesHighlight();
-        let edgeList = this.graphUI.graph.dijkstra(this.startingVertex.label,
-                                                        this.destinationVertex.label);
-        super.highlightEdgeList(edgeList);
+        let edgeList = this.graphUI.graph.dijkstra(this.startingVertex.label,this.destinationVertex.label);
+        if(edgeList != null) //if the graph is directed, there might not even be a path
+            super.highlightEdgeList(edgeList);
     }
 
     endOperation(){

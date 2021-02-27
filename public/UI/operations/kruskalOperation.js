@@ -1,7 +1,6 @@
 class KruskalOperation extends Operation{
     constructor(graphUI){
         super(graphUI);
-        this.graphUI = null;
     }
 
     endOperation(){
