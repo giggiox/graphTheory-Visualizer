@@ -10,3 +10,6 @@ example of BFS:
 
 dijkstra shortest path between 2 vertices:
 ![](dijkstra.gif)
+
+interface:
+![](interface.png)
