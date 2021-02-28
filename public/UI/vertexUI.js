@@ -36,8 +36,10 @@ class VertexUI {
             fill(255,0,0);
         }
         if(this.flags.highlighted){
-            fill(102, 102, 255);
+            stroke(103, 43, 244);
+            strokeWeight(5);
         }
+
         ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
     }
 
