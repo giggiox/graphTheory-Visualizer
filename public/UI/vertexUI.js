@@ -72,7 +72,7 @@ class VertexUI {
         let intervalID = window.setInterval(function(){
             if(blinkedTimes == repetitions){
                 window.clearInterval(intervalID);
-                this.isBlinking=false;
+                referenceToThis.isBlinking=false;
             }
             referenceToThis.flags.invalid =! referenceToThis.flags.invalid;
             blinkedTimes++;
