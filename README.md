@@ -14,7 +14,7 @@ dijkstra shortest path between 2 vertices:
 
 &NewLine;
 interface:
-![](interface.PNG)
+![](interface.gif)
 
 &NewLine;
 Project made using [p5js](https://p5js.org/) and [TypeScript](https://www.typescriptlang.org/).
