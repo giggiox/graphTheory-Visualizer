@@ -1,7 +1,7 @@
 class VertexUI {
     constructor(label, x = null, y = null) {
         this.x = x == null ? random(30,width-30) : x; // height and width are variables set by createCanvas automatically by p5
-        this.y = y == null ? random(30,height-30) : x;
+        this.y = y == null ? random(30,height-30) : y;
         this.label = label;
         this.flags = {
             hover: false,

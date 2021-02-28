@@ -53,7 +53,12 @@ class GraphUI {
      */
     createRandomizedGraph(){
         this.deleteGraph();
-        this.initRandomGraph();
+        if(Math.random()<0.05){
+            this.drawPetersesGraph();
+        }else{
+            this.initRandomGraph();
+        }
+        
     }
 
     setWeighted(){
@@ -86,11 +91,14 @@ class GraphUI {
      * @param {any} label -label of created vertex 
      * @param {number} x -x spawn coordinate
      * @param {number} y -y spawn coordinate
+     * @returns {VertexUI} -the added vertexUI
      */
     addVertex(label = null, x = null, y = null) {
         label == null ? label = this.vertices.length +1 : label;
-        this.vertices.push(new VertexUI(label, x, y));
+        let vertex=new VertexUI(label,x,y);
+        this.vertices.push(vertex);
         this.graph.addVertex(label);
+        return vertex;
     }
 
     /**
@@ -254,5 +262,34 @@ class GraphUI {
             return;
         this.draggedVertex.vertex.flags.dragging = false;
         this.draggedVertex.vertex = undefined;
+    }
+
+    /*draws Petersen Graph*/
+    drawPetersesGraph(){
+        let v1=this.addVertex(1,width/2,150);
+        let v2=this.addVertex(2,width/2-30,300);
+        let v3=this.addVertex(3,width/2+30,300);
+        let v4=this.addVertex(4,width/2+60,220);
+        let v5=this.addVertex(5,width/2-60,220);
+        let v6=this.addVertex(6,width/2,70);
+        let v7=this.addVertex(7,width/2+60,390);
+        let v8=this.addVertex(8,width/2-60,390);
+        let v9=this.addVertex(9,width/2-150,200);
+        let v10=this.addVertex(10,width/2+150,200);
+        this.addingEdgeUtil(v1,v2);
+        this.addingEdgeUtil(v2,v4);
+        this.addingEdgeUtil(v4,v5);
+        this.addingEdgeUtil(v5,v3);
+        this.addingEdgeUtil(v3,v1);
+        this.addingEdgeUtil(v1,v6);
+        this.addingEdgeUtil(v5,v9);
+        this.addingEdgeUtil(v4,v10);
+        this.addingEdgeUtil(v2,v8);
+        this.addingEdgeUtil(v3,v7);
+        this.addingEdgeUtil(v9,v6);
+        this.addingEdgeUtil(v9,v8);
+        this.addingEdgeUtil(v8,v7);
+        this.addingEdgeUtil(v7,v10);
+        this.addingEdgeUtil(v10,v6);
     }
 }
