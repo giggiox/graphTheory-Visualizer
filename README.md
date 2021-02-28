@@ -5,16 +5,20 @@ The goal was to have a continuous display of the various operations, so that if 
 
 You can access it here: https://giggiox.github.io/graphTheory-Visualizer/  <br/><br/>
 
-example of BFS:
-![](bfs.gif)
+interface:
+![](interface.gif)
 
-&NewLine;
+
+other examples: <br/>
+depth-first search:
+![](dfs.gif)
+
+
 dijkstra shortest path between 2 vertices:
 ![](dijkstra.gif)
 
-&NewLine;
-interface:
-![](interface.PNG)
+kruskal minimum spanning tree:
+![](kruskal.gif)
 
 &NewLine;
 Project made using [p5js](https://p5js.org/) and [TypeScript](https://www.typescriptlang.org/).
