@@ -17,6 +17,8 @@ depth-first search:
 dijkstra shortest path between 2 vertices:
 ![](dijkstra.gif)
 
+kruskal minimum spanning tree:
+![](kruskal.gif)
 
 &NewLine;
 Project made using [p5js](https://p5js.org/) and [TypeScript](https://www.typescriptlang.org/).
