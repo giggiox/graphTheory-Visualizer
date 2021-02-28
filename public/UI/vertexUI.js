@@ -11,6 +11,7 @@ class VertexUI {
             highlighted: false
         };
         this.radius = 25;
+        this.isBlinking = false;
     }
 
     render() {
@@ -62,15 +63,18 @@ class VertexUI {
      * @param {number} repetitions 
      */
     blink(repetitions){
-        repetitions=repetitions % 2 != 0 ? repetitions+1: repetitions;
-        let referenceToThis=this;
-        let blinkedTimes=0;
-        this.flags.invalid=!this.flags.invalid;
-        let intervalID=window.setInterval(function(){
+        if(this.isBlinking) return;
+        this.isBlinking = true;
+        repetitions = repetitions % 2 != 0 ? repetitions+1: repetitions; //only even number of repetitions
+        let referenceToThis = this;
+        let blinkedTimes = 0;
+        this.flags.invalid =! this.flags.invalid;
+        let intervalID = window.setInterval(function(){
             if(blinkedTimes == repetitions){
                 window.clearInterval(intervalID);
+                this.isBlinking=false;
             }
-            referenceToThis.flags.invalid=!referenceToThis.flags.invalid;
+            referenceToThis.flags.invalid =! referenceToThis.flags.invalid;
             blinkedTimes++;
         },400,repetitions);
     }
