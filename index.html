@@ -23,8 +23,8 @@
                         <div class="dropdown-menu" role="menu">
                             <a class="dropdown-item algorithms" role="presentation" id="BFS" href="#">breadth-first search</a>
                             <a class="dropdown-item algorithms" role="presentation" id="DFS" href="#">depth-first search</a>
-                            <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted and undirected!</b>" href="#">kruskal MST</a>
-                            <a class="dropdown-item algorithms" role="presentation" id="DIJKSTRA" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted!</b>" href="#">Dijkstra shortest-path</a>
+                            <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" href="#">kruskal MST</a>
+                            <a class="dropdown-item algorithms" role="presentation" id="DIJKSTRA" href="#">Dijkstra shortest-path</a>
                         </div>
                     </li>
                 </ul>
@@ -75,20 +75,20 @@
 
         <div id="canvas">
             <div id="one-vertex-select-tip" class="top10 left10 hidden">
-                1-select one source vertex<br>
+                <b>1-select one source vertex<br></b>
             </div>
 
             <div id="two-vertices-select-tip" class="top10 left10 hidden">
-                1-select first vertex<br>
-                2-select second vertex
+                <b>1-select first vertex<br>
+                2-select second vertex</b>
             </div>
 
             <div id="graph-weighted-danger" class="top10 left10 hidden">
-                graph has to be weighted!
+                <b>graph has to be weighted!</b>
             </div>
 
             <div id="graph-weighted-undirected-danger" class="top10 left10 hidden">
-                graph has to be weighted and undirected!
+                <b>graph has to be weighted and undirected!</b>
             </div>
         </div>
 

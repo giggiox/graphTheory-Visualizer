@@ -36,29 +36,22 @@ function mouseReleased(){
 $(function(){
     $('#visualize-button').data('perform_id',"BFS");
 });
-$('#KRUSKAL').hover(function(){
-    if($('#graph-weighted-checkbox').prop('checked') && !$('#graph-directed-checkbox').prop('checked')){
-        $('#KRUSKAL').tooltip('disable');
-    }else{
-        $('#KRUSKAL').tooltip('enable');
-    }
-})
-$('#DIJKSTRA').hover(function(){
-    if(!$('#graph-weighted-checkbox').prop('checked')){
-        $('#DIJKSTRA').tooltip('enable');
-    }else{
-        $('#DIJKSTRA').tooltip('disable');
-    }
-})
 
 var endVisualization=false;
 var previousText;
 $('.algorithms').click(function(){
     if($(this).attr('id') == "DIJKSTRA" && !$('#graph-weighted-checkbox').prop('checked')){
+        showGraphWeightedDanger();
         return;
     }
     if($(this).attr('id') == "KRUSKAL" && (!$('#graph-weighted-checkbox').prop('checked') || $('#graph-directed-checkbox').prop('checked'))){
+        showGraphWeightedUndirectedDanger();
         return;
+    }
+
+    /* visualize an "empty" operation, so the highlightings will reset */
+    if(graphUI.currentOperation != null){
+        graphUI.visualizeOperation(new Operation());
     }
 
     endVisualization=false;
