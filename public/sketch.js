@@ -21,15 +21,15 @@ function draw() {
     $("#graph-representation").html(reprString);
 }
 
-function touchStarted(){
+function mousePressed(){
     graphUI.mousePressedAction();
 }
 
-function touchMoved(){
+function mouseDragged(){
     graphUI.mouseDraggedAction();
 }
 
-function touchEnded(){
+function mouseReleased(){
     graphUI.mouseReleasedAction();
 }
 
@@ -132,11 +132,20 @@ function showOneVertexTip(){
 
 $('#delete-graph').click(function(){
     graphUI.deleteGraph();
+    resetInterface();
 })
 
 $('#randomize-graph').click(function(){
     graphUI.createRandomizedGraph();
+    resetInterface();
 })
+
+function resetInterface(){
+    $("#visualize-button").attr("class","btn btn-success");
+    $('#visualize-button').text("visualize breadth-first search");
+    $('#visualize-button').data('perform_id',"BFS");
+    endVisualization = false;
+}
 
 
 let graphRepresentationToggle=false;

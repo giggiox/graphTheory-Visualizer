@@ -62,18 +62,26 @@ class GraphUI {
     }
 
     setDirected(){
-        this.isDirected=!this.isDirected;
+        this.isDirected =! this.isDirected;
+        let referenceToThis = this;
+
+        this.edges.forEach(function(edgeUI){
+            referenceToThis.graph.removeEdge(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
+        })
+
         this.graph.isDirected = this.isDirected;
+
         for(let i=0;i<this.edges.length;i++){
             let edgeUI=this.edges[i];
-            this.graph.removeEdgeForChanges(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
             let added=this.graph.addEdge(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
+            /*if switching from directed to undirected and the directed has a double edge in 2 vertices
+                added will return false for the second vertex and we don't need to add it to undirected graph.*/
             if(!added){
-                this.edges.splice(i,1);
+                this.edges.splice(i,1); 
             } 
         }
     }
-    
+
     /**
      * @param {any} label -label of created vertex 
      * @param {number} x -x spawn coordinate
@@ -221,6 +229,7 @@ class GraphUI {
             if (edge.flags.hover) {
                 /*remove edge from business logic (graph) */
                 this.graph.removeEdge(edge.vertexUI1.label,edge.vertexUI2.label);
+
                 /* remove edge from UI */
                 this.edges.splice(i, 1); //splice(startPosition, deleteCount)
                 return;

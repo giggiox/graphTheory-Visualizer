@@ -22,6 +22,17 @@
 .left70 { margin-left:70px; }
 .left120{margin-left: 120px;}
 
+
+
+.icon{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    margin-left: 70px;
+}
+
 #canvas{
     margin: auto;
     width:80%;

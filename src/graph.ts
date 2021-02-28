@@ -47,7 +47,6 @@ class Graph<T>{
         return false;
     }
 
-
     private getAdjacentVertices(v: T): Array<Vertex<T>> {
         let vertice = this.vertices.get(v);
         let retList = new Array<Vertex<T>>();
@@ -58,33 +57,6 @@ class Graph<T>{
         return retList;
 
     }
-
-
-    removeEdgeForChanges(u: T, v: T): void {
-        let verticeA = this.vertices.get(u);
-        let previousA = verticeA;
-        if (verticeA.info == v) {
-            this.vertices.set(u, verticeA.next);
-        }
-        while (verticeA.next != null && verticeA.info != v) {
-            previousA = verticeA;
-            verticeA = verticeA.next;
-        }
-        previousA.next = verticeA.next;
-
-        if(!this.isDirected) return;
-        let verticeB = this.vertices.get(v);
-        let previousB = verticeB;
-        if (previousB.info == u) {
-            this.vertices.set(v, verticeB.next);
-        }
-        while (verticeB.next != null && verticeB.info != u) {
-            previousB = verticeB;
-            verticeB = verticeB.next;
-        }
-        previousB.next = verticeB.next;
-    }
-
 
     removeEdge(u: T, v: T): void {
         let verticeA = this.vertices.get(u);

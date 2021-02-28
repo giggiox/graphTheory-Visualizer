@@ -60,30 +60,6 @@ var Graph = /** @class */ (function () {
         }
         return retList;
     };
-    Graph.prototype.removeEdgeForChanges = function (u, v) {
-        var verticeA = this.vertices.get(u);
-        var previousA = verticeA;
-        if (verticeA.info == v) {
-            this.vertices.set(u, verticeA.next);
-        }
-        while (verticeA.next != null && verticeA.info != v) {
-            previousA = verticeA;
-            verticeA = verticeA.next;
-        }
-        previousA.next = verticeA.next;
-        if (!this.isDirected)
-            return;
-        var verticeB = this.vertices.get(v);
-        var previousB = verticeB;
-        if (previousB.info == u) {
-            this.vertices.set(v, verticeB.next);
-        }
-        while (verticeB.next != null && verticeB.info != u) {
-            previousB = verticeB;
-            verticeB = verticeB.next;
-        }
-        previousB.next = verticeB.next;
-    };
     Graph.prototype.removeEdge = function (u, v) {
         var verticeA = this.vertices.get(u);
         var previousA = verticeA;
