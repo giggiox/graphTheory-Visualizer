@@ -23,7 +23,7 @@
                         <div class="dropdown-menu" role="menu">
                             <a class="dropdown-item algorithms" role="presentation" id="BFS" href="#">breadth-first search</a>
                             <a class="dropdown-item algorithms" role="presentation" id="DFS" href="#">depth-first search</a>
-                            <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted!</b>" href="#">kruskal MST</a>
+                            <a class="dropdown-item algorithms" role="presentation" id="KRUSKAL" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted and undirected!</b>" href="#">kruskal MST</a>
                             <a class="dropdown-item algorithms" role="presentation" id="DIJKSTRA" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<b>graph has to be weighted!</b>" href="#">Dijkstra shortest-path</a>
                         </div>
                     </li>
@@ -81,6 +81,14 @@
             <div id="two-vertices-select-tip" class="top10 left10 hidden">
                 1-select first vertex<br>
                 2-select second vertex
+            </div>
+
+            <div id="graph-weighted-danger" class="top10 left10 hidden">
+                graph has to be weighted!
+            </div>
+
+            <div id="graph-weighted-undirected-danger" class="top10 left10 hidden">
+                graph has to be weighted and undirected!
             </div>
         </div>
 

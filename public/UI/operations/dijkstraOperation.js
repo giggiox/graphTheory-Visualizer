@@ -30,7 +30,9 @@ class DijkstraOperation extends Operation{
     endOperation(){
         this.done=true;
         super.clearEdgesHighlight();
-        this.startingVertex.flags.highlighted=false;
-        this.destinationVertex.flags.highlighted=false;
+        if(this.startingVertex != null) 
+            this.startingVertex.flags.highlighted=false;
+        if(this.destinationVertex != null)
+            this.destinationVertex.flags.highlighted=false;
     }
 }

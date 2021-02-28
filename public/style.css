@@ -62,6 +62,31 @@
     border: 2px solid black;
 }
 
+#graph-weighted-danger{
+    position: absolute;
+    text-align: center;
+    padding: 1.3%;
+    width: 200px;
+    height: 100px;
+    border-radius: 15px;
+    background-color:#DDDDDD;
+    color: red;
+    border: 2px red;
+}
+
+#graph-weighted-undirected-danger{
+    position: absolute;
+    text-align: center;
+    padding: 1.3%;
+    width: 200px;
+    height: 100px;
+    border-radius: 15px;
+    background-color:#DDDDDD;
+    color:red;
+    border: 2px red;
+}
+
+
 .switch {
     position: absolute;
     display: inline-block;

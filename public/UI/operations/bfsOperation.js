@@ -21,6 +21,7 @@ class BFSOperation extends Operation{
 
     endOperation(){
         super.clearEdgesHighlight();
-        if(this.startingVertex != null) this.startingVertex.flags.highlighted = false;
+        if(this.startingVertex != null) 
+            this.startingVertex.flags.highlighted = false;
     }
 }

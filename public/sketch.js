@@ -37,10 +37,10 @@ $(function(){
     $('#visualize-button').data('perform_id',"BFS");
 });
 $('#KRUSKAL').hover(function(){
-    if(!$('#graph-weighted-checkbox').prop('checked')){
-        $('#KRUSKAL').tooltip('enable');
-    }else{
+    if($('#graph-weighted-checkbox').prop('checked') && !$('#graph-directed-checkbox').prop('checked')){
         $('#KRUSKAL').tooltip('disable');
+    }else{
+        $('#KRUSKAL').tooltip('enable');
     }
 })
 $('#DIJKSTRA').hover(function(){
@@ -51,12 +51,16 @@ $('#DIJKSTRA').hover(function(){
     }
 })
 
-let endVisualization=false;
-let previousText;
+var endVisualization=false;
+var previousText;
 $('.algorithms').click(function(){
-    if(($(this).attr('id') == "KRUSKAL" || $(this).attr('id') == "DIJKSTRA") && !$('#graph-weighted-checkbox').prop('checked')){
-            return;
+    if($(this).attr('id') == "DIJKSTRA" && !$('#graph-weighted-checkbox').prop('checked')){
+        return;
     }
+    if($(this).attr('id') == "KRUSKAL" && (!$('#graph-weighted-checkbox').prop('checked') || $('#graph-directed-checkbox').prop('checked'))){
+        return;
+    }
+
     endVisualization=false;
     $("#visualize-button").attr("class","btn btn-success");
     $('#visualize-button').text("visualize " + $(this).text());
@@ -85,9 +89,17 @@ $('#visualize-button').click(function(){
             if(doubleclicked)showOneVertexTip();
             break;
         case "KRUSKAL":
+            if(!$('#graph-weighted-checkbox').prop('checked') || $('#graph-directed-checkbox').prop('checked')){
+                showGraphWeightedUndirectedDanger();
+                return;
+            }
             graphUI.visualizeOperation(new KruskalOperation(graphUI));
             break;
         case "DIJKSTRA":
+            if(!$('#graph-weighted-checkbox').prop('checked')){
+                showGraphWeightedDanger();
+                return;
+            }
             doubleclicked=graphUI.visualizeOperation(new DijkstraOperation(graphUI)); 
             if(doubleclicked)showTwoVerticesTip();
             break;
@@ -117,17 +129,26 @@ $('#btn-add-edge').click(function(){
         showTwoVerticesTip();
 })
 
-function showTwoVerticesTip(){
-    $('#two-vertices-select-tip').show();
+
+function showTipsWithDelay(tipID){
+    $('#'+tipID).show();
     setTimeout(function() { 
-        $('#two-vertices-select-tip').fadeOut(); 
+        $('#'+tipID).fadeOut(); 
     }, 2500);
 }
+function showTwoVerticesTip(){
+    showTipsWithDelay("two-vertices-select-tip");
+}
 function showOneVertexTip(){
-    $('#one-vertex-select-tip').show();
-    setTimeout(function() { 
-        $('#one-vertex-select-tip').fadeOut(); 
-    }, 2500);
+    showTipsWithDelay("one-vertex-select-tip");
+}
+
+function showGraphWeightedDanger(){
+    showTipsWithDelay("graph-weighted-danger");
+}
+
+function showGraphWeightedUndirectedDanger(){
+    showTipsWithDelay("graph-weighted-undirected-danger");
 }
 
 $('#delete-graph').click(function(){
