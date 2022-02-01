@@ -33,7 +33,7 @@ class EdgeUI {
             translate((this.vertexUI1.x + this.vertexUI2.x) / 2, (this.vertexUI1.y + this.vertexUI2.y) / 2);
             //rotate(atan2(this.vertexUI2.y - this.vertexUI1.y, this.vertexUI2.x - this.vertexUI1.x)); //weight text rotated as edge
             textSize(17);
-            this.graphUI.background.strokeWeight(0.4);
+            strokeWeight(0.4);
             text(nfc(d, 0), +5, -5);
             fill(0, 102, 153, 51);
             pop();
