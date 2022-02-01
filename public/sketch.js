@@ -3,8 +3,9 @@ var graphUI=new GraphUI();
 function setup() {
     var width=$('#canvas').width();
     var height=$('#canvas').height();
-    let cnv=createCanvas(width, height);
-    cnv.parent('canvas');
+    var canvas=createCanvas(width, height);
+    canvas.parent('canvas');
+    canvas.mouseWheel(e => Controls.zoom(e));
     graphUI.initRandomGraph();
 }
 
@@ -16,20 +17,27 @@ function windowResized() {
 
 function draw() {
     background(255);
+    translate(Controls.tx, Controls.ty);
+    scale(Controls.scaleFactor);
     graphUI.render();
     let reprString=graphUI.graph.adjacencyListRepresentation();
     $("#graph-representation").html(reprString);
 }
 
-function mousePressed(){
-    graphUI.mousePressedAction();
+function mousePressed(e){
+    let done=graphUI.mousePressedAction();
+    if(!done){
+        Controls.mousePressed(e);
+    }
 }
 
-function mouseDragged(){
+function mouseDragged(e){
+    Controls.mouseDragged(e);
     graphUI.mouseDraggedAction();
 }
 
-function mouseReleased(){
+function mouseReleased(e){
+    Controls.mouseReleased(e);
     graphUI.mouseReleasedAction();
 }
 
