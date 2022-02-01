@@ -1,5 +1,5 @@
 class GraphUI {
-    constructor(graph = null) {
+    constructor(graph=null) {
         this.graph = graph == null ? new Graph() : graph;
         this.vertices = [];
         this.edges = [];
@@ -16,6 +16,8 @@ class GraphUI {
         this.isWeighted= false;
         this.isDirected = false;
     }
+
+
 
     /**
      * deletes current GraphUI
@@ -72,7 +74,7 @@ class GraphUI {
 
         this.edges.forEach(function(edgeUI){
             referenceToThis.graph.removeEdge(edgeUI.vertexUI1.label,edgeUI.vertexUI2.label);
-        })
+        });
 
         this.graph.isDirected = this.isDirected;
 
@@ -95,7 +97,7 @@ class GraphUI {
      */
     addVertex(label = null, x = null, y = null) {
         label == null ? label = this.vertices.length +1 : label;
-        let vertex=new VertexUI(label,x,y);
+        let vertex=new VertexUI(label,this,x,y);
         this.vertices.push(vertex);
         this.graph.addVertex(label);
         return vertex;
@@ -180,7 +182,7 @@ class GraphUI {
     render() {
         this.renderEdges();
         this.renderVertices();
-
+        
         if(this.currentOperation != null){
             this.currentOperation.render();
         }
@@ -190,8 +192,8 @@ class GraphUI {
     renderEdges(){
         let referenceToThis = this;
         this.edges.forEach(function(edgeUI) {
-
-	        edgeUI.flags.hover = edgeUI.hasInside(mouseX,mouseY);
+    
+            edgeUI.flags.hover = edgeUI.hasInside(Controls.getMouseX(),Controls.getMouseY());
             
             //constantly refresh weights
             if(referenceToThis.isWeighted){
@@ -204,8 +206,9 @@ class GraphUI {
 
     
     renderVertices(){
+        let referenceToThis = this;
         this.vertices.forEach(function(vertexUI){
-        vertexUI.flags.hover = vertexUI.hasInside(mouseX,mouseY);
+            vertexUI.flags.hover = vertexUI.hasInside(Controls.getMouseX(),Controls.getMouseY());
             vertexUI.render();
         });
     }
@@ -228,7 +231,7 @@ class GraphUI {
                 }
                 vertexUI.flags.dragging = true;
                 this.draggedVertex.vertex = vertexUI;
-                break;
+                return 1;
             }
         }
 
@@ -240,9 +243,10 @@ class GraphUI {
 
                 /* remove edge from UI */
                 this.edges.splice(i, 1); //splice(startPosition, deleteCount)
-                return;
+                return 1;
             }
         }
+        return 0;
     }
    /**
      * this method is called p5js mouseDragged default function
@@ -250,8 +254,8 @@ class GraphUI {
     mouseDraggedAction() {
         if (this.draggedVertex.vertex == null)
             return;
-        this.draggedVertex.vertex.x = mouseX - this.draggedVertex.dx;
-        this.draggedVertex.vertex.y = mouseY - this.draggedVertex.dy;
+        this.draggedVertex.vertex.x = Controls.getMouseX();
+        this.draggedVertex.vertex.y = Controls.getMouseY();
     }
 
    /**
@@ -260,6 +264,7 @@ class GraphUI {
     mouseReleasedAction() {
         if (!this.draggedVertex.vertex)
             return;
+        this.draggedVertex.vertex.flags.released=true;
         this.draggedVertex.vertex.flags.dragging = false;
         this.draggedVertex.vertex = undefined;
     }

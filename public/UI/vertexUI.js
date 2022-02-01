@@ -1,17 +1,20 @@
 class VertexUI {
-    constructor(label, x = null, y = null) {
+    constructor(label,graphUI, x = null, y = null) {
+        this.label = label;
+        this.graphUI=graphUI;
         this.x = x == null ? random(30,width-30) : x; // height and width are variables set by createCanvas automatically by p5
         this.y = y == null ? random(30,height-30) : y;
-        this.label = label;
+        
         this.flags = {
             hover: false,
             dragging: false,
             clicked: false,
             invalid:false,
-            highlighted: false
+            highlighted: false,
+            released:false
         };
         this.radius = 25;
-        this.isBlinking = false;
+        this.isBlinking = false;        
     }
 
     render() {
@@ -29,6 +32,9 @@ class VertexUI {
         if (this.flags.dragging) {
             fill(100, 255, 255);
         }
+        if(this.flags.released){
+            this.flags.released=false;
+        }
         if (this.flags.clicked) {
             fill(255, 255, 0);
         }
@@ -40,13 +46,13 @@ class VertexUI {
             strokeWeight(5);
         }
 
-        ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
+        ellipse(this.x,this.y, this.radius * 2, this.radius * 2);
     }
 
     renderLabel() {
         noStroke();
         fill(0);
-        textSize(25);
+        textSize(25/Controls.scaleFactor);
         text(this.label, this.x - (textWidth(this.label) / 2), this.y + ((textAscent() + textDescent()) / 4));
     }
 
